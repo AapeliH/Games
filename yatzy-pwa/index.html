@@ -100,21 +100,93 @@
             0 1px 4px rgba(0, 0, 0, .12);
     }
 
+    /* =========================================
+       PLAYER CONTROLS
+       ========================================= */
+
     .header-actions {
         display: flex;
-        justify-content: center;
+
         align-items: center;
+        justify-content: center;
 
         gap: 8px;
+
         margin-top: 10px;
     }
 
-    .add-player-button,
+    .player-control {
+        display: flex;
+
+        align-items: center;
+
+        background: white;
+
+        border: 1px solid var(--border);
+        border-radius: 10px;
+
+        overflow: hidden;
+    }
+
+    .player-control-label {
+        padding: 0 9px;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        color: var(--muted);
+    }
+
+    .player-count {
+        min-width: 28px;
+
+        text-align: center;
+
+        font-size: 15px;
+        font-weight: 800;
+
+        color: var(--text);
+    }
+
+    .player-control-button {
+        width: 34px;
+        height: 34px;
+
+        border: 0;
+
+        background: white;
+        color: var(--dark);
+
+        font-size: 21px;
+        font-weight: 800;
+
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+    .player-control-button:hover {
+        background: #f3f4f6;
+    }
+
+    .player-control-button:active {
+        transform: scale(.94);
+    }
+
+    .player-control-button:disabled {
+        opacity: .3;
+        cursor: default;
+        transform: none;
+    }
+
     .reset-button {
         border: 0;
         border-radius: 9px;
 
-        padding: 9px 14px;
+        padding: 8px 13px;
+
+        background: var(--danger);
+        color: white;
 
         font-size: 13px;
         font-weight: 700;
@@ -122,22 +194,6 @@
         cursor: pointer;
     }
 
-    .add-player-button {
-        background: var(--dark);
-        color: white;
-    }
-
-    .add-player-button:disabled {
-        opacity: .4;
-        cursor: default;
-    }
-
-    .reset-button {
-        background: var(--danger);
-        color: white;
-    }
-
-    .add-player-button:active,
     .reset-button:active {
         transform: scale(.97);
     }
@@ -160,10 +216,6 @@
             0 2px 8px rgba(0, 0, 0, .05);
     }
 
-    /*
-     * The first column is the category.
-     * Player columns are inserted dynamically.
-     */
     .score-row {
         display: grid;
 
@@ -191,16 +243,10 @@
         justify-content: flex-start;
     }
 
-    .header-row {
-        background: var(--dark);
-        color: white;
-
-        font-weight: 800;
-    }
-
-    .header-row > div:first-child {
-        color: white;
-    }
+    /*
+     * Player names are now part of the
+     * upper-section row.
+     */
 
     .section-row {
         background: #f3f4f6;
@@ -214,11 +260,6 @@
         letter-spacing: .04em;
     }
 
-    .score-label {
-        font-size: 14px;
-        line-height: 1.2;
-    }
-
     .player-name-input {
         width: 100%;
 
@@ -227,7 +268,7 @@
 
         background: transparent;
 
-        color: white;
+        color: #374151;
 
         text-align: center;
 
@@ -237,8 +278,18 @@
         min-width: 0;
     }
 
-    .player-name-input::placeholder {
-        color: #d1d5db;
+    .player-name-input:focus {
+        background: white;
+
+        border-radius: 6px;
+
+        box-shadow:
+            0 0 0 2px var(--accent-light);
+    }
+
+    .score-label {
+        font-size: 14px;
+        line-height: 1.2;
     }
 
     .score-input {
@@ -391,7 +442,7 @@
     }
 
     /* =========================================
-       RE-ROLLS
+       RE-ROLL CONTROLS
        ========================================= */
 
     .reroll-area {
@@ -460,6 +511,14 @@
         transform: scale(.94);
     }
 
+    .reroll-button:disabled {
+        opacity: .4;
+    }
+
+    /* =========================================
+       MOBILE
+       ========================================= */
+
     @media (max-width: 700px) {
 
         .app {
@@ -473,6 +532,10 @@
         .score-input {
             width: 52px;
             height: 34px;
+        }
+
+        .player-name-input {
+            font-size: 12px;
         }
 
         .total-row {
@@ -494,6 +557,10 @@
 
     @media (max-width: 500px) {
 
+        .header-actions {
+            flex-wrap: wrap;
+        }
+
         .score-row > div {
             padding: 5px 3px;
         }
@@ -506,8 +573,21 @@
             width: 48px;
         }
 
-        .player-name-input {
-            font-size: 12px;
+        .player-control-label {
+            display: none;
+        }
+
+        .player-control-button {
+            width: 32px;
+            height: 32px;
+        }
+
+        .player-count {
+            min-width: 24px;
+        }
+
+        .reset-button {
+            padding: 7px 11px;
         }
 
         .total-score {
@@ -559,16 +639,47 @@
         </div>
 
 
+        <!-- =====================================
+             PLAYER ADD / REMOVE
+             ===================================== -->
+
         <div class="header-actions">
 
-            <button
-                id="addPlayerButton"
-                class="add-player-button"
-                type="button"
-                onclick="addPlayer()"
-            >
-                ＋ Add Player
-            </button>
+            <div class="player-control">
+
+                <span class="player-control-label">
+                    Players
+                </span>
+
+                <button
+                    id="removePlayerButton"
+                    class="player-control-button"
+                    type="button"
+                    onclick="removePlayer()"
+                    aria-label="Remove player"
+                >
+                    −
+                </button>
+
+                <span
+                    id="playerCount"
+                    class="player-count"
+                >
+                    2
+                </span>
+
+                <button
+                    id="addPlayerButton"
+                    class="player-control-button"
+                    type="button"
+                    onclick="addPlayer()"
+                    aria-label="Add player"
+                >
+                    +
+                </button>
+
+            </div>
+
 
             <button
                 class="reset-button"
@@ -592,19 +703,16 @@
         class="scorecard"
     >
 
-        <div
-            id="yatzyHeader"
-            class="score-row header-row"
-        ></div>
-
-
+        <!-- Player names are in Upper Section -->
         <div
             id="yatzyUpperSection"
             class="score-row section-row"
         ></div>
 
 
-        <div id="yatzyUpperRows"></div>
+        <div
+            id="yatzyUpperRows"
+        ></div>
 
 
         <div
@@ -625,7 +733,9 @@
         ></div>
 
 
-        <div id="yatzyLowerRows"></div>
+        <div
+            id="yatzyLowerRows"
+        ></div>
 
 
         <div
@@ -645,19 +755,16 @@
         class="scorecard hidden"
     >
 
-        <div
-            id="maxHeader"
-            class="score-row header-row"
-        ></div>
-
-
+        <!-- Player names are in Upper Section -->
         <div
             id="maxUpperSection"
             class="score-row section-row"
         ></div>
 
 
-        <div id="maxUpperRows"></div>
+        <div
+            id="maxUpperRows"
+        ></div>
 
 
         <div
@@ -678,7 +785,9 @@
         ></div>
 
 
-        <div id="maxLowerRows"></div>
+        <div
+            id="maxLowerRows"
+        ></div>
 
 
         <div
@@ -692,7 +801,7 @@
 
 
 <!-- =========================================
-     STICKY PLAYER BAR
+     STICKY BOTTOM BAR
      ========================================= -->
 
 <div class="sticky-bar">
@@ -711,71 +820,62 @@
    CONFIGURATION
    ========================================= */
 
-/*
- * This is the maximum number of players.
- */
 const MAX_PLAYERS = 4;
 
+const MIN_PLAYERS = 2;
+
 
 /*
- * Default players.
+ * Initial player names.
  *
- * Change these names here if you want
- * different initial player names.
+ * These can be changed here if desired.
  */
 const DEFAULT_PLAYERS = [
-    "Marjo",
-    "Aapeli"
+    "P1",
+    "P2"
 ];
 
 
-/*
- * Max Yatzy re-rolls start at 0.
- */
 const DEFAULT_REROLLS = 0;
 
 
-/*
- * LocalStorage keys.
- */
+/* =========================================
+   STORAGE KEYS
+   ========================================= */
+
 const STORAGE_KEY =
-    "yatzyScorecardV5";
+    "yatzyScorecardV6";
 
 const GAME_KEY =
     "yatzyCurrentGame";
 
 const PLAYERS_KEY =
-    "yatzyPlayersV1";
+    "yatzyPlayersV2";
 
 const REROLLS_KEY =
-    "maxYatzyRerollsV3";
+    "maxYatzyRerollsV4";
 
 
-/*
- * Current game.
- */
+/* =========================================
+   CURRENT STATE
+   ========================================= */
+
 let currentGame =
     localStorage.getItem(
         GAME_KEY
     ) || "yatzy";
 
 
-/*
- * Load players.
- */
 let players =
     loadPlayers();
 
 
-/*
- * Load individual re-roll counters.
- */
 let rerolls =
     loadRerolls();
 
 
 /* =========================================
-   CATEGORY DEFINITIONS
+   CATEGORIES
    ========================================= */
 
 const upperCategories = [
@@ -939,7 +1039,43 @@ const maxLowerCategories = [
 
 
 /* =========================================
-   PLAYER MANAGEMENT
+   GRID
+   ========================================= */
+
+function getGridTemplate() {
+
+    return `
+        minmax(150px, 1fr)
+        repeat(
+            ${players.length},
+            minmax(58px, 1fr)
+        )
+    `.replace(/\s+/g, " ").trim();
+}
+
+
+/*
+ * Apply the current number of player columns
+ * to every score row.
+ */
+function updateGridColumns() {
+
+    const template =
+        getGridTemplate();
+
+
+    document
+        .querySelectorAll(".score-row")
+        .forEach(row => {
+
+            row.style.gridTemplateColumns =
+                template;
+        });
+}
+
+
+/* =========================================
+   PLAYER STORAGE
    ========================================= */
 
 function loadPlayers() {
@@ -966,7 +1102,7 @@ function loadPlayers() {
 
         if (
             !Array.isArray(loaded) ||
-            loaded.length < 1
+            loaded.length < MIN_PLAYERS
         ) {
 
             return [
@@ -975,12 +1111,32 @@ function loadPlayers() {
         }
 
 
-        return loaded
-            .slice(0, MAX_PLAYERS)
-            .map(
-                (name, index) =>
-                    String(name || `P${index + 1}`)
+        const result =
+            loaded
+                .slice(
+                    0,
+                    MAX_PLAYERS
+                )
+                .map(
+                    (name, index) =>
+                        String(
+                            name ||
+                            `P${index + 1}`
+                        )
+                );
+
+
+        while (
+            result.length < MIN_PLAYERS
+        ) {
+
+            result.push(
+                `P${result.length + 1}`
             );
+        }
+
+
+        return result;
 
 
     } catch {
@@ -1001,14 +1157,10 @@ function savePlayers() {
 }
 
 
-/*
- * Adds a new player.
- *
- * New players automatically become:
- *
- * P3
- * P4
- */
+/* =========================================
+   ADD PLAYER
+   ========================================= */
+
 function addPlayer() {
 
     if (
@@ -1018,24 +1170,21 @@ function addPlayer() {
     }
 
 
-    const nextNumber =
+    const newPlayerNumber =
         players.length + 1;
 
 
     players.push(
-        `P${nextNumber}`
+        `P${newPlayerNumber}`
     );
 
 
-    /*
-     * New player gets a fresh
-     * re-roll counter.
-     */
     rerolls[players.length] =
         DEFAULT_REROLLS;
 
 
     savePlayers();
+
     saveRerolls();
 
 
@@ -1043,17 +1192,127 @@ function addPlayer() {
 
     rebuildStickyBar();
 
+
     loadScoresForGame(
         currentGame
     );
 
+
     update();
+
+    updatePlayerControls();
+}
+
+
+/* =========================================
+   REMOVE PLAYER
+   ========================================= */
+
+function removePlayer() {
+
+    if (
+        players.length <= MIN_PLAYERS
+    ) {
+        return;
+    }
+
+
+    const removedPlayer =
+        players.length;
+
+
+    /*
+     * Remove the last player.
+     *
+     * Existing saved scores for that
+     * player are also removed so that
+     * adding a new player later creates
+     * a genuinely new player.
+     */
+    clearPlayerStorage(
+        removedPlayer
+    );
+
+
+    players.pop();
+
+
+    delete rerolls[
+        removedPlayer
+    ];
+
+
+    savePlayers();
+
+    saveRerolls();
+
+
+    rebuildScorecards();
+
+    rebuildStickyBar();
+
+
+    loadScoresForGame(
+        currentGame
+    );
+
+
+    update();
+
+    updatePlayerControls();
 }
 
 
 /*
- * Change one player's name.
+ * Remove stored scores for one player.
  */
+function clearPlayerStorage(
+    playerNumber
+) {
+
+    const data =
+        getStoredData();
+
+
+    ["yatzy", "max"]
+        .forEach(game => {
+
+            if (!data[game]) {
+                return;
+            }
+
+
+            const suffix =
+                "_" + playerNumber;
+
+
+            Object.keys(
+                data[game]
+            ).forEach(key => {
+
+                if (
+                    key.endsWith(
+                        suffix
+                    )
+                ) {
+
+                    delete data[game][key];
+                }
+            });
+        });
+
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+}
+
+
+/* =========================================
+   PLAYER NAME EDITING
+   ========================================= */
+
 function updatePlayerName(
     playerIndex,
     newName
@@ -1085,8 +1344,54 @@ function updatePlayerName(
 }
 
 
+function updatePlayerNames() {
+
+    document
+        .querySelectorAll(
+            ".player-name-input"
+        )
+        .forEach(
+            (input, index) => {
+
+                if (
+                    players[index] !== undefined
+                ) {
+
+                    input.value =
+                        players[index];
+                }
+            }
+        );
+}
+
+
 /* =========================================
-   RE-ROLL MANAGEMENT
+   PLAYER CONTROL UI
+   ========================================= */
+
+function updatePlayerControls() {
+
+    document.getElementById(
+        "playerCount"
+    ).textContent =
+        players.length;
+
+
+    document.getElementById(
+        "removePlayerButton"
+    ).disabled =
+        players.length <= MIN_PLAYERS;
+
+
+    document.getElementById(
+        "addPlayerButton"
+    ).disabled =
+        players.length >= MAX_PLAYERS;
+}
+
+
+/* =========================================
+   RE-ROLL STORAGE
    ========================================= */
 
 function loadRerolls() {
@@ -1099,11 +1404,13 @@ function loadRerolls() {
 
     const defaults = {};
 
+
     for (
         let i = 1;
         i <= MAX_PLAYERS;
         i++
     ) {
+
         defaults[i] =
             DEFAULT_REROLLS;
     }
@@ -1127,12 +1434,17 @@ function loadRerolls() {
         ) {
 
             const value =
-                Number(data[i]);
+                Number(
+                    data[i]
+                );
 
 
             defaults[i] =
                 Number.isFinite(value)
-                    ? Math.max(0, value)
+                    ? Math.max(
+                        0,
+                        value
+                    )
                     : DEFAULT_REROLLS;
         }
 
@@ -1164,7 +1476,10 @@ function changeRerolls(
     rerolls[playerNumber] =
         Math.max(
             0,
-            rerolls[playerNumber] + amount
+            (
+                rerolls[playerNumber] ||
+                DEFAULT_REROLLS
+            ) + amount
         );
 
 
@@ -1177,21 +1492,22 @@ function changeRerolls(
 function updateRerollDisplay() {
 
     for (
-        let i = 1;
-        i <= players.length;
-        i++
+        let player = 1;
+        player <= players.length;
+        player++
     ) {
 
         const element =
             document.getElementById(
-                `rerolls${i}`
+                `rerolls${player}`
             );
 
 
         if (element) {
 
             element.textContent =
-                rerolls[i];
+                rerolls[player] ??
+                DEFAULT_REROLLS;
         }
     }
 }
@@ -1287,7 +1603,9 @@ function saveGame() {
 }
 
 
-function loadScoresForGame(game) {
+function loadScoresForGame(
+    game
+) {
 
     const data =
         getStoredData();
@@ -1318,7 +1636,7 @@ function loadScoresForGame(game) {
 
 
 /* =========================================
-   SCORECARD BUILDING
+   CREATE SCORE INPUT
    ========================================= */
 
 function createInput(
@@ -1328,7 +1646,9 @@ function createInput(
 ) {
 
     const input =
-        document.createElement("input");
+        document.createElement(
+            "input"
+        );
 
 
     input.className =
@@ -1367,85 +1687,19 @@ function createInput(
 }
 
 
-/*
- * Set the grid columns based on
- * the number of players.
- */
-function getGridTemplate() {
+/* =========================================
+   CREATE SCORE ROW
+   ========================================= */
 
-    /*
-     * Category column is at least 150px.
-     * Player columns share the rest.
-     */
-    return `minmax(150px, 1fr) repeat(${players.length}, minmax(62px, 1fr))`;
-}
-
-
-/*
- * Create a standard row:
- *
- * Category | P1 | P2 | P3 | P4
- */
-function createStandardRow(
-    label,
-    className = ""
-) {
-
-    const row =
-        document.createElement("div");
-
-
-    row.className =
-        `score-row ${className}`.trim();
-
-
-    row.style.gridTemplateColumns =
-        getGridTemplate();
-
-
-    const labelCell =
-        document.createElement("div");
-
-
-    labelCell.textContent =
-        label;
-
-
-    row.appendChild(
-        labelCell
-    );
-
-
-    for (
-        let player = 1;
-        player <= players.length;
-        player++
-    ) {
-
-        const cell =
-            document.createElement("div");
-
-
-        row.appendChild(
-            cell
-        );
-    }
-
-
-    return row;
-}
-
-
-/*
- * Create a score row with inputs.
- */
 function createScoreRow(
     game,
     category
 ) {
 
     const row =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     row.className =
@@ -1457,7 +1711,9 @@ function createScoreRow(
 
 
     const label =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     label.className =
@@ -1480,7 +1736,9 @@ function createScoreRow(
     ) {
 
         const cell =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         cell.appendChild(
@@ -1502,39 +1760,41 @@ function createScoreRow(
 }
 
 
-/*
- * Creates the header:
- *
- * Category | Marjo | Aapeli | P3 | P4
- */
-function createHeader(
+/* =========================================
+   CREATE UPPER SECTION
+   WITH PLAYER NAMES
+   ========================================= */
+
+function buildUpperSection(
     containerId
 ) {
 
-    const container =
+    const row =
         document.getElementById(
             containerId
         );
 
 
-    container.innerHTML =
+    row.innerHTML =
         "";
 
 
-    container.style.gridTemplateColumns =
+    row.style.gridTemplateColumns =
         getGridTemplate();
 
 
-    const categoryCell =
-        document.createElement("div");
+    const sectionCell =
+        document.createElement(
+            "div"
+        );
 
 
-    categoryCell.textContent =
-        "Category";
+    sectionCell.textContent =
+        "Upper Section";
 
 
-    container.appendChild(
-        categoryCell
+    row.appendChild(
+        sectionCell
     );
 
 
@@ -1542,7 +1802,9 @@ function createHeader(
         (name, index) => {
 
             const cell =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
 
             const input =
@@ -1571,8 +1833,10 @@ function createHeader(
                 20;
 
 
-            input.title =
-                "Tap to rename player";
+            input.setAttribute(
+                "aria-label",
+                `Player ${index + 1} name`
+            );
 
 
             input.addEventListener(
@@ -1604,7 +1868,7 @@ function createHeader(
             );
 
 
-            container.appendChild(
+            row.appendChild(
                 cell
             );
         }
@@ -1612,27 +1876,171 @@ function createHeader(
 }
 
 
-/*
- * Rebuild the whole scorecard after
- * adding a player.
- */
+/* =========================================
+   SECTION ROW
+   ========================================= */
+
+function buildSimpleSection(
+    containerId,
+    label
+) {
+
+    const row =
+        document.getElementById(
+            containerId
+        );
+
+
+    row.innerHTML =
+        "";
+
+
+    row.style.gridTemplateColumns =
+        getGridTemplate();
+
+
+    const labelCell =
+        document.createElement(
+            "div"
+        );
+
+
+    labelCell.textContent =
+        label;
+
+
+    row.appendChild(
+        labelCell
+    );
+
+
+    for (
+        let i = 0;
+        i < players.length;
+        i++
+    ) {
+
+        row.appendChild(
+            document.createElement(
+                "div"
+            )
+        );
+    }
+}
+
+
+/* =========================================
+   CALCULATED ROW
+   ========================================= */
+
+function buildCalculatedRow(
+    id,
+    label,
+    prefix,
+    isTotal = false
+) {
+
+    const row =
+        document.getElementById(
+            id
+        );
+
+
+    row.innerHTML =
+        "";
+
+
+    row.style.gridTemplateColumns =
+        getGridTemplate();
+
+
+    const labelCell =
+        document.createElement(
+            "div"
+        );
+
+
+    if (isTotal) {
+
+        const strong =
+            document.createElement(
+                "strong"
+            );
+
+
+        strong.textContent =
+            label;
+
+
+        labelCell.appendChild(
+            strong
+        );
+
+    } else {
+
+        labelCell.textContent =
+            label;
+    }
+
+
+    row.appendChild(
+        labelCell
+    );
+
+
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
+
+        const cell =
+            document.createElement(
+                "div"
+            );
+
+
+        cell.id =
+            `${prefix}${player}`;
+
+
+        cell.className =
+            "calculated";
+
+
+        if (
+            label === "Bonus"
+        ) {
+
+            cell.classList.add(
+                "bonus"
+            );
+        }
+
+
+        row.appendChild(
+            cell
+        );
+    }
+}
+
+
+/* =========================================
+   BUILD SCORECARDS
+   ========================================= */
+
 function rebuildScorecards() {
 
     /*
-     * Clear existing rows.
+     * Clear dynamic rows.
      */
-    const ids = [
-
+    [
         "yatzyUpperRows",
         "yatzyLowerRows",
-
         "maxUpperRows",
         "maxLowerRows"
-
-    ];
-
-
-    ids.forEach(id => {
+    ]
+    .forEach(id => {
 
         document.getElementById(
             id
@@ -1641,43 +2049,35 @@ function rebuildScorecards() {
 
 
     /*
-     * Headers.
+     * Upper section with player names.
      */
-    createHeader(
-        "yatzyHeader"
+    buildUpperSection(
+        "yatzyUpperSection"
     );
 
-    createHeader(
-        "maxHeader"
+
+    buildUpperSection(
+        "maxUpperSection"
     );
 
 
     /*
-     * Section rows.
+     * Lower section headers.
      */
-    setupSectionRow(
-        "yatzyUpperSection",
-        "Upper Section"
-    );
-
-    setupSectionRow(
+    buildSimpleSection(
         "yatzyLowerSection",
         "Lower Section"
     );
 
-    setupSectionRow(
-        "maxUpperSection",
-        "Upper Section"
-    );
 
-    setupSectionRow(
+    buildSimpleSection(
         "maxLowerSection",
         "Lower Section"
     );
 
 
     /*
-     * Upper categories.
+     * Upper score rows.
      */
     upperCategories.forEach(
         category => {
@@ -1709,7 +2109,7 @@ function rebuildScorecards() {
 
 
     /*
-     * Lower Yatzy categories.
+     * Yatzy lower section.
      */
     yatzyLowerCategories.forEach(
         category => {
@@ -1729,7 +2129,7 @@ function rebuildScorecards() {
 
 
     /*
-     * Lower Max Yatzy categories.
+     * Max Yatzy lower section.
      */
     maxLowerCategories.forEach(
         category => {
@@ -1751,64 +2151,6 @@ function rebuildScorecards() {
     /*
      * Calculated rows.
      */
-    buildCalculatedRows();
-}
-
-
-/*
- * Section row helper.
- */
-function setupSectionRow(
-    id,
-    label
-) {
-
-    const row =
-        document.getElementById(id);
-
-
-    row.innerHTML =
-        "";
-
-
-    row.style.gridTemplateColumns =
-        getGridTemplate();
-
-
-    const first =
-        document.createElement("div");
-
-
-    first.textContent =
-        label;
-
-
-    row.appendChild(
-        first
-    );
-
-
-    for (
-        let i = 0;
-        i < players.length;
-        i++
-    ) {
-
-        const empty =
-            document.createElement("div");
-
-
-        row.appendChild(
-            empty
-        );
-    }
-}
-
-
-/*
- * Build calculated rows.
- */
-function buildCalculatedRows() {
 
     buildCalculatedRow(
         "yatzyUpperTotalRow",
@@ -1852,134 +2194,14 @@ function buildCalculatedRows() {
         "maxTotal",
         true
     );
-}
 
 
-/*
- * Create a calculated row.
- */
-function buildCalculatedRow(
-    id,
-    label,
-    prefix,
-    totalRow = false
-) {
-
-    const row =
-        document.getElementById(id);
-
-
-    row.innerHTML =
-        "";
-
-
-    row.style.gridTemplateColumns =
-        getGridTemplate();
-
-
-    const labelCell =
-        document.createElement("div");
-
-
-    if (totalRow) {
-
-        labelCell.innerHTML =
-            `<strong>${label}</strong>`;
-
-    } else {
-
-        labelCell.textContent =
-            label;
-    }
-
-
-    row.appendChild(
-        labelCell
-    );
-
-
-    for (
-        let player = 1;
-        player <= players.length;
-        player++
-    ) {
-
-        const cell =
-            document.createElement("div");
-
-
-        cell.id =
-            `${prefix}${player}`;
-
-
-        cell.className =
-            "calculated";
-
-
-        if (
-            label === "Bonus"
-        ) {
-            cell.classList.add(
-                "bonus"
-            );
-        }
-
-
-        row.appendChild(
-            cell
-        );
-    }
+    updateGridColumns();
 }
 
 
 /* =========================================
-   PLAYER HEADER / GRID UPDATE
-   ========================================= */
-
-function updatePlayerNames() {
-
-    document
-        .querySelectorAll(
-            ".player-name-input"
-        )
-        .forEach(
-            (input, index) => {
-
-                if (
-                    players[index] !== undefined
-                ) {
-
-                    input.value =
-                        players[index];
-                }
-            }
-        );
-}
-
-
-/*
- * Update every score row grid width.
- */
-function updateGridColumns() {
-
-    const template =
-        getGridTemplate();
-
-
-    document
-        .querySelectorAll(
-            ".score-row"
-        )
-        .forEach(row => {
-
-            row.style.gridTemplateColumns =
-                template;
-        });
-}
-
-
-/* =========================================
-   STICKY PLAYER BAR
+   STICKY BOTTOM BAR
    ========================================= */
 
 function rebuildStickyBar() {
@@ -1994,11 +2216,11 @@ function rebuildStickyBar() {
         "";
 
 
-    /*
-     * One column per player.
-     */
     container.style.gridTemplateColumns =
-        `repeat(${players.length}, minmax(0, 1fr))`;
+        `repeat(
+            ${players.length},
+            minmax(0, 1fr)
+        )`;
 
 
     for (
@@ -2008,7 +2230,9 @@ function rebuildStickyBar() {
     ) {
 
         const status =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         status.className =
@@ -2069,7 +2293,10 @@ function rebuildStickyBar() {
                         id="rerolls${player}"
                         class="reroll-number"
                     >
-                        ${rerolls[player]}
+                        ${
+                            rerolls[player] ??
+                            DEFAULT_REROLLS
+                        }
                     </span>
 
 
@@ -2100,10 +2327,6 @@ function rebuildStickyBar() {
 }
 
 
-/*
- * Max Yatzy shows re-roll controls.
- * Normal Yatzy hides them.
- */
 function updateRerollVisibility() {
 
     for (
@@ -2132,7 +2355,7 @@ function updateRerollVisibility() {
 
 
 /* =========================================
-   SCORE CALCULATIONS
+   SCORE CALCULATION
    ========================================= */
 
 function getScore(
@@ -2151,18 +2374,22 @@ function getScore(
         !input ||
         input.value === ""
     ) {
+
         return 0;
     }
 
 
     const value =
-        Number(input.value);
+        Number(
+            input.value
+        );
 
 
     if (
         !Number.isFinite(value) ||
         value < 0
     ) {
+
         return 0;
     }
 
@@ -2171,9 +2398,6 @@ function getScore(
 }
 
 
-/*
- * Upper section total.
- */
 function getUpperTotal(
     game,
     player
@@ -2185,12 +2409,14 @@ function getUpperTotal(
             category
         ) => {
 
-            return sum +
+            return (
+                sum +
                 getScore(
                     game,
                     category.key,
                     player
-                );
+                )
+            );
 
         },
         0
@@ -2198,9 +2424,10 @@ function getUpperTotal(
 }
 
 
-/*
- * Normal Yatzy.
- */
+/* =========================================
+   YATZY CALCULATION
+   ========================================= */
+
 function updateYatzy() {
 
     const totals =
@@ -2279,15 +2506,10 @@ function updateYatzy() {
 }
 
 
-/*
- * Max Yatzy.
- *
- * Upper bonus threshold:
- * 75 points.
- *
- * Bonus:
- * 50 points.
- */
+/* =========================================
+   MAX YATZY CALCULATION
+   ========================================= */
+
 function updateMax() {
 
     const totals =
@@ -2367,7 +2589,7 @@ function updateMax() {
 
 
 /* =========================================
-   WINNER HANDLING
+   WINNER
    ========================================= */
 
 function updateWinners(
@@ -2375,9 +2597,6 @@ function updateWinners(
     totals
 ) {
 
-    /*
-     * Remove winner highlighting.
-     */
     for (
         let player = 1;
         player <= players.length;
@@ -2399,27 +2618,25 @@ function updateWinners(
     }
 
 
-    /*
-     * Find the highest score.
-     */
     const highest =
         Math.max(
             ...totals
         );
 
 
-    /*
-     * Highlight only if there
-     * is an actual score lead.
-     */
-    const hasLead =
+    const leaders =
         totals.filter(
             score =>
                 score === highest
-        ).length === 1;
+        ).length;
 
 
-    if (!hasLead) {
+    /*
+     * Do not highlight on a tie.
+     */
+    if (
+        leaders !== 1
+    ) {
         return;
     }
 
@@ -2445,9 +2662,10 @@ function updateWinners(
 }
 
 
-/*
- * Sticky totals.
- */
+/* =========================================
+   STICKY TOTALS
+   ========================================= */
+
 function updateStickyTotals(
     totals
 ) {
@@ -2467,7 +2685,7 @@ function updateStickyTotals(
         if (element) {
 
             element.textContent =
-                totals[player - 1];
+                totals[player - 1] ?? 0;
         }
     }
 }
@@ -2477,7 +2695,9 @@ function updateStickyTotals(
    GAME SWITCH
    ========================================= */
 
-function setGame(game) {
+function setGame(
+    game
+) {
 
     currentGame =
         game;
@@ -2549,8 +2769,10 @@ function resetGame() {
     const confirmed =
         confirm(
             "Reset the current game?\n\n" +
-            "All scores for the current game will be cleared.\n" +
-            "All player re-roll counters will be set to 0."
+            "All scores for the current game " +
+            "will be cleared.\n" +
+            "All re-roll counters will be " +
+            "set to 0."
         );
 
 
@@ -2560,8 +2782,7 @@ function resetGame() {
 
 
     /*
-     * Clear only the currently
-     * selected game's score inputs.
+     * Clear current game's scores.
      */
     document
         .querySelectorAll(
@@ -2575,8 +2796,7 @@ function resetGame() {
 
 
     /*
-     * Reset all existing players'
-     * re-roll counters.
+     * Reset re-roll counters.
      */
     for (
         let player = 1;
@@ -2621,6 +2841,8 @@ function update() {
 
     updateRerollVisibility();
 
+    updatePlayerControls();
+
     saveGame();
 }
 
@@ -2633,9 +2855,6 @@ document.addEventListener(
     "input",
     event => {
 
-        /*
-         * Score changes.
-         */
         if (
             event.target.classList.contains(
                 "score"
@@ -2644,12 +2863,6 @@ document.addEventListener(
 
             update();
         }
-
-
-        /*
-         * Player-name changes are
-         * handled separately.
-         */
     }
 );
 
@@ -2658,65 +2871,55 @@ document.addEventListener(
    ESCAPE HTML
    ========================================= */
 
-function escapeHtml(value) {
+function escapeHtml(
+    value
+) {
 
-    return String(value)
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
+    return String(
+        value
+    )
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
 }
 
 
 /* =========================================
-   START APPLICATION
+   START
    ========================================= */
 
-/*
- * Build everything for the first time.
- */
 rebuildScorecards();
 
 rebuildStickyBar();
 
-
-/*
- * Load scores for the currently
- * selected game.
- */
 loadScoresForGame(
     currentGame
 );
 
-
-/*
- * Set correct game visibility.
- */
 setGame(
     currentGame
 );
 
+updatePlayerControls();
 
-/*
- * Final UI update.
- */
-update();
+updateRerollDisplay();
 
 </script>
 
