@@ -42,7 +42,7 @@ A two-player Yatzy scorecard designed primarily for mobile devices.
 
 #### Max Yatzy
 - 6 dice
-- 83-point upper-section bonus threshold, bonus 100
+- 75-point upper-section bonus threshold, bonus 50
 - Yatzy 100 points
 
 ## 🌐 Web Games
