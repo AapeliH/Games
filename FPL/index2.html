@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPL League Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:       #0d0d1a;
+    --surface:  #151528;
+    --surface2: #1c1c38;
+    --border:   #2b2b50;
+    --green:    #00e87a;
+    --purple:   #a855f7;
+    --cyan:     #22d3ee;
+    --text:     #e2e2f0;
+    --muted:    #7878a0;
+    --up:       #22c55e;
+    --down:     #ef4444;
+    --flat:     #6b7280;
+    --cat1:  #00e87a;
+    --cat2:  #22d3ee;
+    --cat3:  #f472b6;
+    --cat4:  #fbbf24;
+    --cat5:  #a78bfa;
+    --cat6:  #fb923c;
+    --cat7:  #34d399;
+    --cat8:  #60a5fa;
+    --cat9:  #e879f9;
+    --cat10: #facc15;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ─────────────────────────────────────── */
+  .app { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: -0.3px;
+  }
+  .header-left p { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .badge strong { color: var(--text); }
+  .btn-refresh {
+    background: var(--green);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn-refresh:hover { opacity: .85; }
+  .btn-refresh:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* ── Stat tiles ─────────────────────────────────── */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .tile-label { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+  .tile-value { font-size: 26px; font-weight: 700; margin-top: 4px; }
+  .tile-sub { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .accent-green { color: var(--green); }
+  .accent-cyan  { color: var(--cyan); }
+  .accent-purple{ color: var(--purple); }
+
+  /* ── Card ───────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .card-header h2 { font-size: 14px; font-weight: 600; }
+  .card-header .meta { font-size: 12px; color: var(--muted); }
+
+  /* ── Standings table ─────────────────────────────── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  thead th.num { text-align: right; }
+  tbody tr { transition: background .1s; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody tr + tr td { border-top: 1px solid var(--border); }
+  td {
+    padding: 11px 14px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .rank-num { font-weight: 700; font-size: 15px; min-width: 24px; display: inline-block; text-align: center; }
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .move { font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+  .move-up   { background: rgba(34,197,94,.15); color: var(--up); }
+  .move-down { background: rgba(239,68,68,.15);  color: var(--down); }
+  .move-flat { background: rgba(107,114,128,.15); color: var(--flat); }
+
+  .team-name   { font-weight: 600; }
+  .manager-name{ color: var(--muted); font-size: 12px; }
+
+  .gw-pts { font-weight: 700; font-size: 15px; color: var(--cyan); }
+  .total-pts { font-weight: 700; font-size: 15px; }
+  .first-row td { background: rgba(0,232,122,.05); }
+  .color-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+
+  /* ── Chart ──────────────────────────────────────── */
+  .chart-wrap { padding: 16px; height: 340px; position: relative; }
+
+  /* ── Loading / error ─────────────────────────────── */
+  .state-msg {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+  }
+  .state-msg .spinner {
+    display: inline-block;
+    width: 28px; height: 28px;
+    border: 3px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-icon { font-size: 28px; margin-bottom: 8px; }
+  .error-detail { font-size: 12px; color: var(--down); margin-top: 6px; }
+
+  /* ── GW selector ────────────────────────────────── */
+  .gw-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 0 18px 14px;
+  }
+  .gw-tab {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all .15s;
+  }
+  .gw-tab:hover   { border-color: var(--green); color: var(--text); }
+  .gw-tab.active  { background: var(--green); border-color: var(--green); color: #000; font-weight: 700; }
+
+  /* ── Footer ─────────────────────────────────────── */
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="header-left">
+      <h1 id="leagueName">Loading league…</h1>
+      <p id="leagueMeta">League ID 1130463 · FPL 2025/26</p>
+    </div>
+    <div class="header-right">
+      <span class="badge">GW <strong id="currentGW">—</strong></span>
+      <button class="btn-refresh" id="btnRefresh" onclick="loadAll()">↻ Refresh</button>
+    </div>
+  </header>
+
+  <!-- Stat tiles -->
+  <div class="tiles">
+    <div class="tile">
+      <div class="tile-label">Teams</div>
+      <div class="tile-value accent-green" id="totalTeams">—</div>
+      <div class="tile-sub" id="teamsSubtitle">in league</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Leader</div>
+      <div class="tile-value" id="leaderPts" style="font-size:20px">—</div>
+      <div class="tile-sub" id="leaderName">—</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">GW Top Score</div>
+      <div class="tile-value accent-cyan" id="gwTopPts">—</div>
+      <div class="tile-sub" id="gwTopName">—</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Avg GW Score</div>
+      <div class="tile-value accent-purple" id="gwAvg">—</div>
+      <div class="tile-sub">this gameweek</div>
+    </div>
+  </div>
+
+  <!-- Standings -->
+  <div class="card">
+    <div class="card-header">
+      <h2>League Standings</h2>
+      <span class="meta" id="updatedAt">—</span>
+    </div>
+    <div id="standingsBody">
+      <div class="state-msg"><div class="spinner"></div><br>Fetching standings…</div>
+    </div>
+  </div>
+
+  <!-- Points timeline chart -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Points Timeline</h2>
+      <span class="meta">Cumulative total · top 10</span>
+    </div>
+    <div id="chartBody">
+      <div class="state-msg"><div class="spinner"></div><br>Loading chart data…</div>
+    </div>
+  </div>
+
+  <!-- GW points chart -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Gameweek Scores</h2>
+      <span class="meta">Points per GW · top 10</span>
+    </div>
+    <div id="gwChartBody">
+      <div class="state-msg"><div class="spinner"></div><br>Loading…</div>
+    </div>
+  </div>
+
+  <footer>
+    Data from the <a href="https://fantasy.premierleague.com" target="_blank" rel="noopener">FPL API</a> ·
+    Updates when you click Refresh · Last loaded <span id="footerTime">—</span>
+  </footer>
+</div>
+
+<script>
+'use strict';
+
+const LEAGUE_ID   = 1130463;
+const CORS_PROXY  = 'https://corsproxy.io/?url=';
+const FPL_BASE    = 'https://fantasy.premierleague.com/api';
+const CAT_COLORS  = [
+  '#00e87a','#22d3ee','#f472b6','#fbbf24',
+  '#a78bfa','#fb923c','#34d399','#60a5fa',
+  '#e879f9','#facc15'
+];
+
+let timelineChart = null;
+let gwChart       = null;
+
+// ── Utilities ──────────────────────────────────────
+
+async function fetchFPL(path) {
+  const url    = `${FPL_BASE}${path}`;
+  const resp   = await fetch(`${CORS_PROXY}${encodeURIComponent(url)}`);
+  if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${path}`);
+  return resp.json();
+}
+
+function txt(id, val) { document.getElementById(id).textContent = val; }
+function html(id, val) { document.getElementById(id).innerHTML  = val; }
+
+function loading(id, msg) {
+  html(id, `<div class="state-msg"><div class="spinner"></div><br>${msg}</div>`);
+}
+function errState(id, msg, detail = '') {
+  html(id, `<div class="state-msg">
+    <div class="error-icon">⚠[U+FE0F]</div>
+    <div>${msg}</div>
+    ${detail ? `<div class="error-detail">${detail}</div>` : ''}
+  </div>`);
+}
+
+function moveTag(current, last) {
+  if (!last || last === 0) return '';
+  const diff = last - current;
+  if (diff > 0) return `<span class="move move-up">▲${diff}</span>`;
+  if (diff < 0) return `<span class="move move-down">▼${Math.abs(diff)}</span>`;
+  return `<span class="move move-flat">—</span>`;
+}
+
+// ── Data fetching ──────────────────────────────────
+
+async function fetchAllStandings() {
+  let page    = 1;
+  let results = [];
+  let hasNext = true;
+  while (hasNext) {
+    const data    = await fetchFPL(`/leagues-classic/${LEAGUE_ID}/standings/?page_standings=${page}`);
+    const entries = data.standings?.results ?? [];
+    results.push(...entries);
+    hasNext = data.standings?.has_next ?? false;
+    page++;
+    if (page > 20) break; // safety cap
+  }
+  return results;
+}
+
+async function fetchHistory(entryId) {
+  try {
+    const data = await fetchFPL(`/entry/${entryId}/history/`);
+    return data.current ?? [];
+  } catch {
+    return [];
+  }
+}
+
+// ── Render standings ───────────────────────────────
+
+function renderStandings(entries, colors) {
+  if (!entries.length) {
+    errState('standingsBody', 'No standings data returned.');
+    return;
+  }
+
+  const rows = entries.map((e, i) => {
+    const isFirst = i === 0;
+    const dot     = colors[i] ? `<span class="color-dot" style="background:${colors[i]}"></span>` : '';
+    return `<tr class="${isFirst ? 'first-row' : ''}">
+      <td>
+        <div class="rank-badge">
+          <span class="rank-num">${e.rank}</span>
+          ${moveTag(e.rank, e.last_rank)}
+        </div>
+      </td>
+      <td>
+        ${dot}<span class="team-name">${esc(e.entry_name)}</span>
+        <br><span class="manager-name">${esc(e.player_name)}</span>
+      </td>
+      <td class="num gw-pts">${e.event_total}</td>
+      <td class="num total-pts">${e.total}</td>
+    </tr>`;
+  }).join('');
+
+  html('standingsBody', `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Team / Manager</th>
+            <th class="num">GW Pts</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`);
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Render timeline chart ──────────────────────────
+
+function renderTimelineChart(histories, labels) {
+  html('chartBody', '<div class="chart-wrap"><canvas id="tlCanvas"></canvas></div>');
+  const ctx = document.getElementById('tlCanvas').getContext('2d');
+
+  // Find max GW across all histories
+  const maxGW = Math.max(...histories.map(h => h.length));
+  const gwLabels = Array.from({ length: maxGW }, (_, i) => `GW${i + 1}`);
+
+  const datasets = histories.map((h, i) => ({
+    label: labels[i],
+    data: h.map(gw => gw.total_points),
+    borderColor: CAT_COLORS[i % CAT_COLORS.length],
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    pointRadius: 3,
+    pointHoverRadius: 6,
+    tension: 0.3,
+  }));
+
+  if (timelineChart) timelineChart.destroy();
+  timelineChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: gwLabels, datasets },
+    options: chartOptions('Cumulative points', true),
+  });
+}
+
+// ── Render GW-by-GW chart ──────────────────────────
+
+function renderGWChart(histories, labels) {
+  html('gwChartBody', '<div class="chart-wrap"><canvas id="gwCanvas"></canvas></div>');
+  const ctx = document.getElementById('gwCanvas').getContext('2d');
+
+  const maxGW    = Math.max(...histories.map(h => h.length));
+  const gwLabels = Array.from({ length: maxGW }, (_, i) => `GW${i + 1}`);
+
+  const datasets = histories.map((h, i) => ({
+    label: labels[i],
+    data: h.map(gw => gw.points),
+    borderColor: CAT_COLORS[i % CAT_COLORS.length],
+    backgroundColor: CAT_COLORS[i % CAT_COLORS.length] + '22',
+    borderWidth: 2,
+    pointRadius: 3,
+    pointHoverRadius: 6,
+    tension: 0.2,
+    fill: false,
+  }));
+
+  if (gwChart) gwChart.destroy();
+  gwChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: gwLabels, datasets },
+    options: chartOptions('Points this GW', false),
+  });
+}
+
+function chartOptions(yLabel, showLegend) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: {
+        display: showLegend,
+        position: 'bottom',
+        labels: {
+          color: '#7878a0',
+          boxWidth: 10,
+          boxHeight: 10,
+          padding: 14,
+          font: { size: 11 },
+        },
+      },
+      tooltip: {
+        backgroundColor: '#1c1c38',
+        borderColor: '#2b2b50',
+        borderWidth: 1,
+        titleColor: '#e2e2f0',
+        bodyColor: '#7878a0',
+        padding: 10,
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} pts`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid:  { color: '#1e1e38' },
+        ticks: { color: '#7878a0', font: { size: 11 } },
+      },
+      y: {
+        title: { display: false, text: yLabel, color: '#7878a0' },
+        grid:  { color: '#1e1e38' },
+        ticks: { color: '#7878a0', font: { size: 11 } },
+      },
+    },
+  };
+}
+
+// ── Main loader ────────────────────────────────────
+
+async function loadAll() {
+  const btn = document.getElementById('btnRefresh');
+  btn.disabled = true;
+  btn.textContent = '↻ Loading…';
+
+  // Reset charts
+  html('standingsBody',  '<div class="state-msg"><div class="spinner"></div><br>Fetching standings…</div>');
+  html('chartBody',      '<div class="state-msg"><div class="spinner"></div><br>Loading chart data…</div>');
+  html('gwChartBody',    '<div class="state-msg"><div class="spinner"></div><br>Loading…</div>');
+
+  try {
+    // 1. Bootstrap (current GW)
+    const boot = await fetchFPL('/bootstrap-static/');
+    const currentEvent = (boot.events ?? []).find(e => e.is_current)
+                      || (boot.events ?? []).filter(e => e.finished).pop()
+                      || {};
+    const gwNum = currentEvent.id ?? '—';
+    txt('currentGW', gwNum);
+
+    // 2. League info + standings
+    const leagueData = await fetchFPL(`/leagues-classic/${LEAGUE_ID}/standings/`);
+    const leagueInfo = leagueData.league ?? {};
+    txt('leagueName', leagueInfo.name || `League ${LEAGUE_ID}`);
+
+    // Fetch all pages
+    let entries = leagueData.standings?.results ?? [];
+    if (leagueData.standings?.has_next) {
+      const rest = await fetchAllStandings();
+      // already have page 1, merge
+      const ids = new Set(entries.map(e => e.entry));
+      rest.forEach(e => { if (!ids.has(e.entry)) entries.push(e); });
+    }
+
+    // Sort by rank
+    entries.sort((a, b) => a.rank - b.rank);
+
+    // Assign colors only for top 10 (chart lines)
+    const top10    = entries.slice(0, 10);
+    const colorMap = Object.fromEntries(top10.map((e, i) => [e.entry, CAT_COLORS[i]]));
+
+    renderStandings(entries, top10.map((_, i) => CAT_COLORS[i]));
+
+    // Stat tiles
+    txt('totalTeams', entries.length);
+    if (entries[0]) {
+      txt('leaderPts',  entries[0].total);
+      txt('leaderName', `${entries[0].entry_name} — ${entries[0].player_name}`);
+    }
+    const gwScores = entries.map(e => e.event_total).filter(Boolean);
+    if (gwScores.length) {
+      const maxGW  = Math.max(...gwScores);
+      const avgGW  = Math.round(gwScores.reduce((a,b) => a+b, 0) / gwScores.length);
+      const topIdx = entries.findIndex(e => e.event_total === maxGW);
+      txt('gwTopPts',  maxGW);
+      txt('gwTopName', topIdx >= 0 ? entries[topIdx].entry_name : '—');
+      txt('gwAvg',     avgGW);
+    }
+
+    txt('updatedAt', `Updated ${new Date().toLocaleTimeString()}`);
+    txt('footerTime', new Date().toLocaleTimeString());
+
+    // 3. Fetch histories for top 10
+    const histPromises = top10.map(e => fetchHistory(e.entry));
+    const histories    = await Promise.all(histPromises);
+    const labels       = top10.map(e => e.entry_name);
+
+    const validPairs = top10
+      .map((e, i) => ({ label: e.entry_name, history: histories[i] }))
+      .filter(p => p.history.length > 0);
+
+    if (validPairs.length) {
+      renderTimelineChart(validPairs.map(p => p.history), validPairs.map(p => p.label));
+      renderGWChart(validPairs.map(p => p.history), validPairs.map(p => p.label));
+    } else {
+      errState('chartBody',   'No gameweek history available yet.', 'Season may not have started.');
+      errState('gwChartBody', 'No gameweek history available yet.', 'Season may not have started.');
+    }
+
+  } catch (err) {
+    console.error(err);
+    errState('standingsBody', 'Failed to load data.', err.message);
+    errState('chartBody',     'Failed to load chart.',  err.message);
+    errState('gwChartBody',   'Failed to load chart.',  err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↻ Refresh';
+  }
+}
+
+loadAll();
+</script>
+</body>
+</html>
