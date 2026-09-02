@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wargame Unit Cards</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #e8e4dc;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        /* ── App toolbar ── */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+            justify-content: center;
+        }
+        .toolbar h1 {
+            font-size: 22px;
+            color: #3a3a2a;
+            letter-spacing: 1px;
+        }
+        .btn-add-card {
+            background: #3a3a2a;
+            color: #fff;
+            border: none;
+            padding: 9px 22px;
+            font-size: 15px;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 3px;
+            letter-spacing: 0.5px;
+        }
+        .btn-add-card:hover { background: #555540; }
+
+        /* ── Cards container ── */
+        #cards {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 36px;
+        }
+
+        .empty-state {
+            color: #999;
+            font-size: 15px;
+            padding: 48px 0;
+            text-align: center;
+        }
+
+        /* ── Score card shell ── */
+        .score-card {
+            width: 820px;
+            border: 2px solid #3a3a2a;
+            background: #fff;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.18);
+        }
+
+        /* ── Card header ── */
+        .card-header {
+            background: #3a3a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            position: relative;
+        }
+        .unit-name-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-align: center;
+            width: 82%;
+        }
+        .unit-name-input::placeholder { color: rgba(255,255,255,0.45); }
+
+        .btn-remove-card {
+            position: absolute;
+            right: 10px;
+            background: #8b2020;
+            color: #fff;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 3px;
+            font-size: 15px;
+            cursor: pointer;
+            line-height: 26px;
+            text-align: center;
+            padding: 0;
+        }
+        .btn-remove-card:hover { background: #b03030; }
+
+        /* ── Stats table section ── */
+        .stats-section {
+            border-bottom: 2px solid #3a3a2a;
+        }
+
+        .row-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 8px;
+            border-bottom: 1px solid #3a3a2a;
+            background: #f7f5f0;
+        }
+        .row-controls span {
+            font-size: 11px;
+            color: #777;
+        }
+
+        .btn-row {
+            background: #3a3a2a;
+            color: #fff;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 3px;
+            font-size: 17px;
+            line-height: 20px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+        }
+        .btn-row:hover { background: #555540; }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .stats-table th {
+            border: 1px solid #3a3a2a;
+            padding: 4px 5px;
+            text-align: center;
+            font-size: 13px;
+            background: #f7f5f0;
+        }
+        .stats-table th:first-child { text-align: left; min-width: 130px; }
+        .stats-table td {
+            border: 1px solid #3a3a2a;
+            padding: 0;
+        }
+
+        .input-model {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 13px;
+            padding: 4px 6px;
+            background: transparent;
+        }
+        .input-stat {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 13px;
+            text-align: center;
+            padding: 4px 2px;
+            background: transparent;
+        }
+        .input-stat:focus, .input-model:focus { background: #fffde8; }
+
+        .btn-remove-row {
+            display: block;
+            margin: auto;
+            background: #8b2020;
+            color: #fff;
+            border: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 2px;
+            font-size: 13px;
+            line-height: 16px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+        }
+        .btn-remove-row:hover { background: #b03030; }
+
+        /* ── Middle section ── */
+        .middle-section {
+            display: flex;
+            border-bottom: 2px solid #3a3a2a;
+            min-height: 220px;
+        }
+
+        /* image side */
+        .image-area {
+            width: 44%;
+            border-right: 2px solid #3a3a2a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            background: #fafaf8;
+        }
+        .image-area:hover .img-overlay { opacity: 1; }
+        .img-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 13px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .img-placeholder {
+            color: #bbb;
+            font-size: 13px;
+            text-align: center;
+            padding: 20px;
+            user-select: none;
+        }
+        .unit-image {
+            max-width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            display: block;
+        }
+        input[type="file"] { display: none; }
+
+        /* info boxes side */
+        .info-area {
+            width: 56%;
+            display: flex;
+            flex-direction: column;
+        }
+        .info-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #3a3a2a;
+        }
+        .info-box:last-child { border-bottom: none; flex: 1.6; }
+
+        .info-label {
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px 8px;
+            background: #f0ede5;
+            border-bottom: 1px solid #ddd;
+            letter-spacing: 0.5px;
+        }
+        .info-textarea {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 13px;
+            padding: 5px 8px;
+            resize: none;
+            background: transparent;
+            min-height: 44px;
+        }
+        .info-textarea:focus { background: #fffde8; }
+
+        /* ── Special rules ── */
+        .special-rules-section {
+            display: flex;
+            flex-direction: column;
+        }
+        .special-rules-label {
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px 8px;
+            background: #f0ede5;
+            border-bottom: 1px solid #ddd;
+            letter-spacing: 0.5px;
+        }
+        .special-rules-textarea {
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 13px;
+            padding: 6px 8px;
+            resize: vertical;
+            min-height: 52px;
+            background: transparent;
+        }
+        .special-rules-textarea:focus { background: #fffde8; }
+
+        /* ── Print ── */
+        @media print {
+            body { background: #fff; padding: 0; }
+            .toolbar, .btn-remove-card, .btn-row, .btn-remove-row,
+            .row-controls { display: none !important; }
+            .score-card {
+                width: 100%;
+                box-shadow: none;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="toolbar">
+    <h1>Wargame Unit Cards</h1>
+    <button class="btn-add-card" onclick="addCard()">+ Add Unit Card</button>
+</div>
+
+<div id="cards">
+    <p class="empty-state" id="empty-state">No unit cards yet — click <strong>+ Add Unit Card</strong> to begin.</p>
+</div>
+
+<script>
+    let uid = 0;
+
+    const STATS = ['M','WS','BS','S','T','W','I','A','LD','Points'];
+
+    function addCard() {
+        document.getElementById('empty-state').style.display = 'none';
+        const id = ++uid;
+
+        const card = document.createElement('div');
+        card.className = 'score-card';
+        card.id = 'card-' + id;
+
+        card.innerHTML = `
+            <!-- Header -->
+            <div class="card-header">
+                <input class="unit-name-input" type="text" placeholder="UNIT NAME" />
+                <button class="btn-remove-card" title="Remove card" onclick="removeCard(${id})">✕</button>
+            </div>
+
+            <!-- Stats table -->
+            <div class="stats-section">
+                <div class="row-controls">
+                    <button class="btn-row" title="Add row" onclick="addRow(${id})">+</button>
+                    <button class="btn-row" title="Remove last row" onclick="removeLastRow(${id})">−</button>
+                    <span>add / remove model rows</span>
+                </div>
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left">Model</th>
+                            ${STATS.map(s => `<th>${s}</th>`).join('')}
+                            <th style="width:26px"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-${id}"></tbody>
+                </table>
+            </div>
+
+            <!-- Middle: image + info -->
+            <div class="middle-section">
+                <div class="image-area" id="img-area-${id}" onclick="triggerUpload(${id})">
+                    <input type="file" id="img-input-${id}" accept="image/*"
+                           onchange="loadImage(event,${id})" />
+                    <div class="img-placeholder" id="img-ph-${id}">
+                        🖼<br><br>Click to import<br>unit image
+                    </div>
+                    <div class="img-overlay">Change image</div>
+                </div>
+
+                <div class="info-area">
+                    <div class="info-box">
+                        <div class="info-label">WEAPONS:</div>
+                        <textarea class="info-textarea" placeholder="e.g. Hand weapons"></textarea>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">ARMOUR:</div>
+                        <textarea class="info-textarea" placeholder="e.g. Light armour"></textarea>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">OPTIONS:</div>
+                        <textarea class="info-textarea"
+                            placeholder="e.g. The entire unit may take any of the following:&#10;Thrusting spears  +1 point per model&#10;Shields  +1 point per model"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special rules -->
+            <div class="special-rules-section">
+                <div class="special-rules-label">SPECIAL RULES:</div>
+                <textarea class="special-rules-textarea"
+                    placeholder="e.g. Close Order, Horde, Scurry Away, Warband, Regimental Unit"></textarea>
+            </div>
+        `;
+
+        document.getElementById('cards').appendChild(card);
+        addRow(id);
+        addRow(id);
+    }
+
+    function addRow(cardId) {
+        const tbody = document.getElementById('tbody-' + cardId);
+        const rowId = 'row-' + cardId + '-' + Date.now();
+        const tr = document.createElement('tr');
+        tr.id = rowId;
+        tr.innerHTML = `
+            <td><input class="input-model" type="text" placeholder="Model name" /></td>
+            ${STATS.map(() => `<td><input class="input-stat" type="text" placeholder="–" /></td>`).join('')}
+            <td style="text-align:center; vertical-align:middle; padding:2px;">
+                <button class="btn-remove-row" title="Remove row"
+                        onclick="removeRow('${rowId}')">✕</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function removeRow(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) row.remove();
+    }
+
+    function removeLastRow(cardId) {
+        const tbody = document.getElementById('tbody-' + cardId);
+        if (tbody.rows.length > 0) tbody.removeChild(tbody.lastElementChild);
+    }
+
+    function removeCard(cardId) {
+        const card = document.getElementById('card-' + cardId);
+        if (card) card.remove();
+        if (!document.querySelector('.score-card')) {
+            document.getElementById('empty-state').style.display = '';
+        }
+    }
+
+    function triggerUpload(cardId) {
+        document.getElementById('img-input-' + cardId).click();
+    }
+
+    function loadImage(event, cardId) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const area = document.getElementById('img-area-' + cardId);
+            const ph   = document.getElementById('img-ph-' + cardId);
+            ph.style.display = 'none';
+            const old = area.querySelector('.unit-image');
+            if (old) old.remove();
+            const img = document.createElement('img');
+            img.className = 'unit-image';
+            img.src = e.target.result;
+            // insert before the overlay div
+            const overlay = area.querySelector('.img-overlay');
+            area.insertBefore(img, overlay);
+        };
+        reader.readAsDataURL(file);
+    }
+</script>
+</body>
+</html>
