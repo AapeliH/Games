@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
 <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 >
+
 <title>Yatzy Scorecard</title>
 
 <style>
@@ -24,6 +26,7 @@
         --green: #16a34a;
         --green-light: #dcfce7;
         --dark: #111827;
+        --danger: #B0001B;
     }
 
     html {
@@ -32,84 +35,111 @@
 
     body {
         margin: 0;
-        padding: 0 0 145px;
+        padding: 0 0 165px;
+
         font-family:
             system-ui,
             -apple-system,
             BlinkMacSystemFont,
             "Segoe UI",
             sans-serif;
+
         background: var(--bg);
         color: var(--text);
     }
 
     .app {
         width: 100%;
-        max-width: 720px;
+        max-width: 1100px;
         margin: 0 auto;
         padding: 14px;
     }
+
+    /* =========================================
+       HEADER
+       ========================================= */
 
     header {
         text-align: center;
         margin-bottom: 14px;
     }
 
-    h1 {
-        margin: 0 0 12px;
-        font-size: clamp(28px, 8vw, 42px);
-    }
-
-    /* =========================================
-       GAME TOGGLE
-       ========================================= */
-
-.reset-button {
-    margin-top: 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 9px;
-    padding: 8px 14px;
-    background: #B0001B;
-    color: white;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.reset-button:active {
-    transform: scale(.97);
-}
-
-.reset-button:hover {
-    background: #f9fafb;
-    color: #B0001B;
-}
-
     .game-toggle {
         display: flex;
+
         background: #e5e7eb;
         border-radius: 12px;
         padding: 4px;
+
         max-width: 440px;
         margin: 0 auto;
     }
 
     .game-toggle button {
         flex: 1;
+
         border: 0;
         padding: 11px 8px;
+
         border-radius: 9px;
+
         background: transparent;
         color: var(--muted);
+
         font-size: 14px;
         font-weight: 700;
+
         cursor: pointer;
     }
 
     .game-toggle button.active {
         background: white;
         color: var(--accent);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
+
+        box-shadow:
+            0 1px 4px rgba(0, 0, 0, .12);
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .add-player-button,
+    .reset-button {
+        border: 0;
+        border-radius: 9px;
+
+        padding: 9px 14px;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+    .add-player-button {
+        background: var(--dark);
+        color: white;
+    }
+
+    .add-player-button:disabled {
+        opacity: .4;
+        cursor: default;
+    }
+
+    .reset-button {
+        background: var(--danger);
+        color: white;
+    }
+
+    .add-player-button:active,
+    .reset-button:active {
+        transform: scale(.97);
     }
 
     /* =========================================
@@ -117,17 +147,28 @@
        ========================================= */
 
     .scorecard {
+        width: 100%;
+
         background: var(--card);
+
         border-radius: 14px;
         overflow: hidden;
+
         border: 1px solid var(--border);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+
+        box-shadow:
+            0 2px 8px rgba(0, 0, 0, .05);
     }
 
+    /*
+     * The first column is the category.
+     * Player columns are inserted dynamically.
+     */
     .score-row {
         display: grid;
-        grid-template-columns: minmax(155px, 1fr) 82px 82px;
+
         min-height: 47px;
+
         border-bottom: 1px solid var(--border);
     }
 
@@ -137,9 +178,13 @@
 
     .score-row > div {
         display: flex;
+
         align-items: center;
         justify-content: center;
+
         padding: 7px;
+
+        min-width: 0;
     }
 
     .score-row > div:first-child {
@@ -149,14 +194,22 @@
     .header-row {
         background: var(--dark);
         color: white;
+
         font-weight: 800;
+    }
+
+    .header-row > div:first-child {
+        color: white;
     }
 
     .section-row {
         background: #f3f4f6;
+
         font-size: 13px;
         font-weight: 800;
+
         color: #4b5563;
+
         text-transform: uppercase;
         letter-spacing: .04em;
     }
@@ -166,21 +219,50 @@
         line-height: 1.2;
     }
 
+    .player-name-input {
+        width: 100%;
+
+        border: 0;
+        outline: none;
+
+        background: transparent;
+
+        color: white;
+
+        text-align: center;
+
+        font: inherit;
+        font-weight: 800;
+
+        min-width: 0;
+    }
+
+    .player-name-input::placeholder {
+        color: #d1d5db;
+    }
+
     .score-input {
         width: 60px;
         height: 36px;
+
         border: 1px solid var(--border);
         border-radius: 8px;
+
         text-align: center;
+
         font-size: 16px;
         font-weight: 700;
+
         outline: none;
+
         background: white;
     }
 
     .score-input:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 2px var(--accent-light);
+
+        box-shadow:
+            0 0 0 2px var(--accent-light);
     }
 
     .calculated {
@@ -195,6 +277,7 @@
     .total-row {
         background: var(--dark);
         color: white;
+
         font-weight: 800;
         font-size: 18px;
     }
@@ -218,9 +301,11 @@
 
     .sticky-bar {
         position: fixed;
+
         left: 0;
         right: 0;
         bottom: 0;
+
         z-index: 1000;
 
         padding:
@@ -240,83 +325,113 @@
 
     .sticky-inner {
         width: 100%;
-        max-width: 720px;
+        max-width: 1100px;
+
         margin: 0 auto;
 
         display: grid;
-        grid-template-columns: 1fr 1fr;
+
         gap: 1px;
 
         background: #4b5563;
+
         border-radius: 12px;
         overflow: hidden;
     }
 
     .player-status {
+        min-width: 0;
+
         background: var(--dark);
         color: white;
+
         padding: 8px 10px;
-        min-width: 0;
     }
 
     .player-status-header {
         display: flex;
+
         align-items: center;
         justify-content: space-between;
+
         gap: 6px;
+
         margin-bottom: 5px;
     }
 
     .player-name-small {
         font-size: 12px;
         font-weight: 800;
+
         text-transform: uppercase;
         letter-spacing: .05em;
-    }
 
-    .total-score {
-        font-size: 26px;
-        line-height: 1;
-        font-weight: 900;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .score-title {
         color: #cbd5e1;
+
         font-size: 9px;
+
         text-transform: uppercase;
         letter-spacing: .08em;
+
         font-weight: 800;
     }
 
-    /* Re-roll area */
+    .total-score {
+        font-size: 26px;
+
+        line-height: 1;
+
+        font-weight: 900;
+    }
+
+    /* =========================================
+       RE-ROLLS
+       ========================================= */
 
     .reroll-area {
         display: flex;
+
         align-items: center;
         justify-content: space-between;
+
         gap: 6px;
+
         margin-top: 7px;
         padding-top: 7px;
+
         border-top: 1px solid #374151;
     }
 
     .reroll-label {
         color: #cbd5e1;
+
         font-size: 9px;
+
         text-transform: uppercase;
         letter-spacing: .08em;
+
         font-weight: 800;
     }
 
     .reroll-controls {
         display: flex;
+
         align-items: center;
+
         gap: 5px;
     }
 
     .reroll-number {
         min-width: 25px;
+
         text-align: center;
+
         font-size: 17px;
         font-weight: 900;
     }
@@ -324,14 +439,20 @@
     .reroll-button {
         width: 29px;
         height: 29px;
+
         padding: 0;
+
         border: 0;
         border-radius: 7px;
+
         background: white;
         color: var(--dark);
+
         font-size: 19px;
         font-weight: 900;
+
         cursor: pointer;
+
         line-height: 1;
     }
 
@@ -339,21 +460,10 @@
         transform: scale(.94);
     }
 
-    .hidden-reroll {
-        display: none;
-    }
+    @media (max-width: 700px) {
 
-    @media (max-width: 480px) {
         .app {
             padding: 10px;
-        }
-
-        .score-row {
-            grid-template-columns: minmax(132px, 1fr) 64px 64px;
-        }
-
-        .score-row > div {
-            padding: 5px;
         }
 
         .score-label {
@@ -363,10 +473,6 @@
         .score-input {
             width: 52px;
             height: 34px;
-        }
-
-        .header-row {
-            font-size: 13px;
         }
 
         .total-row {
@@ -386,16 +492,21 @@
         }
     }
 
-    @media (max-width: 350px) {
-        .score-row {
-            grid-template-columns: minmax(110px, 1fr) 58px 58px;
+    @media (max-width: 500px) {
+
+        .score-row > div {
+            padding: 5px 3px;
+        }
+
+        .score-label {
+            font-size: 12px;
         }
 
         .score-input {
             width: 48px;
         }
 
-        .score-label {
+        .player-name-input {
             font-size: 12px;
         }
 
@@ -407,9 +518,18 @@
             width: 26px;
             height: 26px;
         }
+
+        .reroll-label {
+            display: none;
+        }
+
+        .player-status {
+            padding: 6px;
+        }
     }
 </style>
 </head>
+
 
 <body>
 
@@ -418,6 +538,7 @@
     <header>
 
         <div class="game-toggle">
+
             <button
                 id="yatzyBtn"
                 class="active"
@@ -433,18 +554,32 @@
                 onclick="setGame('max')"
             >
                 Max Yatzy · 6 Dice
-        </div>
-	<div>
             </button>
-		<button
-		    id="resetGameButton"
-		    class="reset-button"
-		    type="button"
-		    onclick="resetGame()"
-		>
-		    ↻ Reset Game
-		</button>
-	</div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <button
+                id="addPlayerButton"
+                class="add-player-button"
+                type="button"
+                onclick="addPlayer()"
+            >
+                ＋ Add Player
+            </button>
+
+            <button
+                class="reset-button"
+                type="button"
+                onclick="resetGame()"
+            >
+                ↻ Reset Game
+            </button>
+
+        </div>
+
     </header>
 
 
@@ -452,41 +587,51 @@
          NORMAL YATZY
          ========================================= -->
 
-    <div id="yatzyCard" class="scorecard">
+    <div
+        id="yatzyCard"
+        class="scorecard"
+    >
 
-        <div class="score-row section-row">
-            <div>Upper Section</div>
-            <div>Marjo</div>
-            <div>Aapeli</div>
-        </div>
+        <div
+            id="yatzyHeader"
+            class="score-row header-row"
+        ></div>
+
+
+        <div
+            id="yatzyUpperSection"
+            class="score-row section-row"
+        ></div>
+
 
         <div id="yatzyUpperRows"></div>
 
-        <div class="score-row">
-            <div><strong>Upper Total (63)</strong></div>
-            <div id="yatzyUpper1" class="calculated">0</div>
-            <div id="yatzyUpper2" class="calculated">0</div>
-        </div>
 
-        <div class="score-row">
-            <div>Bonus</div>
-            <div id="yatzyBonus1" class="calculated bonus">0</div>
-            <div id="yatzyBonus2" class="calculated bonus">0</div>
-        </div>
+        <div
+            id="yatzyUpperTotalRow"
+            class="score-row"
+        ></div>
 
-        <div class="score-row section-row">
-            <div>Lower Section</div>
-            <div></div>
-            <div></div>
-        </div>
+
+        <div
+            id="yatzyBonusRow"
+            class="score-row"
+        ></div>
+
+
+        <div
+            id="yatzyLowerSection"
+            class="score-row section-row"
+        ></div>
+
 
         <div id="yatzyLowerRows"></div>
 
-        <div class="score-row total-row">
-            <div>🏆 TOTAL</div>
-            <div id="yatzyTotal1" class="calculated">0</div>
-            <div id="yatzyTotal2" class="calculated">0</div>
-        </div>
+
+        <div
+            id="yatzyTotalRow"
+            class="score-row total-row"
+        ></div>
 
     </div>
 
@@ -495,41 +640,51 @@
          MAX YATZY
          ========================================= -->
 
-    <div id="maxCard" class="scorecard hidden">
+    <div
+        id="maxCard"
+        class="scorecard hidden"
+    >
 
-        <div class="score-row section-row">
-            <div>Upper Section</div>
-            <div>Marjo</div>
-            <div>Aapeli</div>
-        </div>
+        <div
+            id="maxHeader"
+            class="score-row header-row"
+        ></div>
+
+
+        <div
+            id="maxUpperSection"
+            class="score-row section-row"
+        ></div>
+
 
         <div id="maxUpperRows"></div>
 
-        <div class="score-row">
-            <div><strong>Upper Total (75)</strong></div>
-            <div id="maxUpper1" class="calculated">0</div>
-            <div id="maxUpper2" class="calculated">0</div>
-        </div>
 
-        <div class="score-row">
-            <div>Bonus</div>
-            <div id="maxBonus1" class="calculated bonus">0</div>
-            <div id="maxBonus2" class="calculated bonus">0</div>
-        </div>
+        <div
+            id="maxUpperTotalRow"
+            class="score-row"
+        ></div>
 
-        <div class="score-row section-row">
-            <div>Lower Section</div>
-            <div></div>
-            <div></div>
-        </div>
+
+        <div
+            id="maxBonusRow"
+            class="score-row"
+        ></div>
+
+
+        <div
+            id="maxLowerSection"
+            class="score-row section-row"
+        ></div>
+
 
         <div id="maxLowerRows"></div>
 
-        <div class="score-row total-row">
-            <div>🏆 TOTAL</div>
-            <div id="maxTotal1" class="calculated">0</div>
-            <div id="maxTotal2" class="calculated">0</div>
-        </div>
+
+        <div
+            id="maxTotalRow"
+            class="score-row total-row"
+        ></div>
 
     </div>
 
@@ -537,131 +692,15 @@
 
 
 <!-- =========================================
-     STICKY BOTTOM BAR
+     STICKY PLAYER BAR
      ========================================= -->
 
 <div class="sticky-bar">
 
-    <div class="sticky-inner">
-
-        <!-- MARJO -->
-
-        <div class="player-status">
-
-            <div class="player-status-header">
-                <span class="player-name-small">Marjo</span>
-                <span class="score-title">Total</span>
-            </div>
-
-            <div
-                id="stickyTotal1"
-                class="total-score"
-            >
-                0
-            </div>
-
-            <div
-                id="rerollArea1"
-                class="reroll-area hidden-reroll"
-            >
-
-                <span class="reroll-label">
-                    Re-rolls
-                </span>
-
-                <div class="reroll-controls">
-
-                    <button
-                        class="reroll-button"
-                        type="button"
-                        onclick="changeRerolls(1, -1)"
-                        aria-label="Use one Marjo re-roll"
-                    >
-                        −
-                    </button>
-
-                    <span
-                        id="rerolls1"
-                        class="reroll-number"
-                    >
-                        0
-                    </span>
-
-                    <button
-                        class="reroll-button"
-                        type="button"
-                        onclick="changeRerolls(1, 1)"
-                        aria-label="Add one Marjo re-roll"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- AAPELI -->
-
-        <div class="player-status">
-
-            <div class="player-status-header">
-                <span class="player-name-small">Aapeli</span>
-                <span class="score-title">Total</span>
-            </div>
-
-            <div
-                id="stickyTotal2"
-                class="total-score"
-            >
-                0
-            </div>
-
-            <div
-                id="rerollArea2"
-                class="reroll-area hidden-reroll"
-            >
-
-                <span class="reroll-label">
-                    Re-rolls
-                </span>
-
-                <div class="reroll-controls">
-
-                    <button
-                        class="reroll-button"
-                        type="button"
-                        onclick="changeRerolls(2, -1)"
-                        aria-label="Use one Aapeli re-roll"
-                    >
-                        −
-                    </button>
-
-                    <span
-                        id="rerolls2"
-                        class="reroll-number"
-                    >
-                        0
-                    </span>
-
-                    <button
-                        class="reroll-button"
-                        type="button"
-                        onclick="changeRerolls(2, 1)"
-                        aria-label="Add one Aapeli re-roll"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+    <div
+        id="stickyInner"
+        class="sticky-inner"
+    ></div>
 
 </div>
 
@@ -669,141 +708,70 @@
 <script>
 
 /* =========================================
-   STORAGE
+   CONFIGURATION
    ========================================= */
 
-const STORAGE_KEY = "yatzyScorecardV4";
-const GAME_KEY = "yatzyCurrentGame";
+/*
+ * This is the maximum number of players.
+ */
+const MAX_PLAYERS = 4;
 
+
+/*
+ * Default players.
+ *
+ * Change these names here if you want
+ * different initial player names.
+ */
+const DEFAULT_PLAYERS = [
+    "Marjo",
+    "Aapeli"
+];
+
+
+/*
+ * Max Yatzy re-rolls start at 0.
+ */
+const DEFAULT_REROLLS = 0;
+
+
+/*
+ * LocalStorage keys.
+ */
+const STORAGE_KEY =
+    "yatzyScorecardV5";
+
+const GAME_KEY =
+    "yatzyCurrentGame";
+
+const PLAYERS_KEY =
+    "yatzyPlayersV1";
+
+const REROLLS_KEY =
+    "maxYatzyRerollsV3";
+
+
+/*
+ * Current game.
+ */
 let currentGame =
-    localStorage.getItem(GAME_KEY) || "yatzy";
+    localStorage.getItem(
+        GAME_KEY
+    ) || "yatzy";
 
 
-/*============
-reset game
-=============*/
-
-function resetGame() {
-
-    const confirmed = confirm(
-        "Reset the current game?\n\n" +
-        "All scores for the current game will be cleared."
-    );
-
-    if (!confirmed) {
-        return;
-    }
-
-    /*
-     * Clear scores only for the currently selected game.
-     *
-     * This means:
-     * - Resetting Yatzy does NOT erase Max Yatzy.
-     * - Resetting Max Yatzy does NOT erase Yatzy.
-     */
-    document
-        .querySelectorAll(
-            `.score[data-game="${currentGame}"]`
-        )
-        .forEach(input => {
-            input.value = "";
-        });
+/*
+ * Load players.
+ */
+let players =
+    loadPlayers();
 
 
-    /*
-     * Reset both players' Max Yatzy re-rolls
-     * back to 3.
-     */
-    rerolls[1] = 0;
-    rerolls[2] = 0;
-
-    saveRerolls();
-    updateRerollDisplay();
-
-
-    /*
-     * Save the cleared scores.
-     */
-    saveGame();
-
-    /*
-     * Recalculate all totals.
-     */
-    update();
-}
-
-/* =========================================
-   RE-ROLL COUNTERS
-   ========================================= */
-
-let rerolls = loadRerolls();
-
-function loadRerolls() {
-
-    const saved =
-        localStorage.getItem("maxYatzyRerollsV2");
-
-    if (!saved) {
-        return {
-            1: 0,
-            2: 0
-        };
-    }
-
-    try {
-
-        const data = JSON.parse(saved);
-
-        return {
-            1: Number.isFinite(Number(data[1]))
-                ? Math.max(0, Number(data[1]))
-                : 0,
-
-            2: Number.isFinite(Number(data[2]))
-                ? Math.max(0, Number(data[2]))
-                : 0
-        };
-
-    } catch {
-
-        return {
-            1: 3,
-            2: 3
-        };
-    }
-}
-
-
-function saveRerolls() {
-
-    localStorage.setItem(
-        "maxYatzyRerollsV2",
-        JSON.stringify(rerolls)
-    );
-}
-
-
-function changeRerolls(player, amount) {
-
-    rerolls[player] =
-        Math.max(
-            0,
-            rerolls[player] + amount
-        );
-
-    saveRerolls();
-    updateRerollDisplay();
-}
-
-
-function updateRerollDisplay() {
-
-    document.getElementById("rerolls1")
-        .textContent = rerolls[1];
-
-    document.getElementById("rerolls2")
-        .textContent = rerolls[2];
-}
+/*
+ * Load individual re-roll counters.
+ */
+let rerolls =
+    loadRerolls();
 
 
 /* =========================================
@@ -811,287 +779,421 @@ function updateRerollDisplay() {
    ========================================= */
 
 const upperCategories = [
+
     {
         key: "ones",
         label: "Ones"
     },
+
     {
         key: "twos",
         label: "Twos"
     },
+
     {
         key: "threes",
         label: "Threes"
     },
+
     {
         key: "fours",
         label: "Fours"
     },
+
     {
         key: "fives",
         label: "Fives"
     },
+
     {
         key: "sixes",
         label: "Sixes"
     }
+
 ];
 
 
 const yatzyLowerCategories = [
+
     {
         key: "pair",
         label: "One Pair"
     },
+
     {
         key: "twoPairs",
         label: "Two Pairs"
     },
+
     {
         key: "threeKind",
         label: "Three of a Kind"
     },
+
     {
         key: "fourKind",
         label: "Four of a Kind"
     },
+
     {
         key: "fullHouse",
         label: "Full House"
     },
+
     {
         key: "smallStraight",
         label: "Small Straight"
     },
+
     {
         key: "largeStraight",
         label: "Large Straight"
     },
+
     {
         key: "chance",
         label: "Chance"
     },
+
     {
         key: "yatzy",
         label: "Yatzy (50)"
     }
+
 ];
 
 
-/*
- * Max Yatzy categories.
- *
- * The scoring remains based on the rules provided:
- *
- * 1 Pair
- * 2 Pairs
- * 3 Pairs
- * Three of a Kind
- * Four of a Kind
- * Five of a Kind
- * Small Straight
- * Large Straight
- * Full Straight
- * Full House
- * Four of a Kind + Pair
- * Two Three of a Kinds
- * Chance
- * Yatzy
- */
-
 const maxLowerCategories = [
+
     {
         key: "pair",
         label: "One Pair"
     },
+
     {
         key: "twoPairs",
         label: "Two Pairs"
     },
+
     {
         key: "threePairs",
         label: "Three Pairs"
     },
+
     {
         key: "threeKind",
         label: "Three of a Kind"
     },
+
     {
         key: "fourKind",
         label: "Four of a Kind"
     },
+
     {
         key: "fiveKind",
         label: "Five of a Kind"
     },
+
     {
         key: "smallStraight",
         label: "Small Straight"
     },
+
     {
         key: "largeStraight",
         label: "Large Straight"
     },
+
     {
         key: "fullStraight",
         label: "Full Straight"
     },
+
     {
         key: "fullHouse",
         label: "Full House"
     },
+
     {
         key: "talo",
         label: "Four of a Kind + Pair"
     },
+
     {
         key: "sauna",
         label: "Two Three of a Kinds"
     },
+
     {
         key: "chance",
         label: "Chance"
     },
+
     {
         key: "yatzy",
         label: "Yatzy (100)"
     }
+
 ];
 
 
 /* =========================================
-   BUILD SCORECARD
+   PLAYER MANAGEMENT
    ========================================= */
 
-function createInput(
-    game,
-    category,
-    player
-) {
+function loadPlayers() {
 
-    const input =
-        document.createElement("input");
-
-    input.className =
-        "score-input score";
-
-    input.type = "number";
-    input.inputMode = "numeric";
-    input.min = "0";
-    input.step = "1";
-
-    input.dataset.game =
-        game;
-
-    input.dataset.cat =
-        category;
-
-    input.dataset.player =
-        player;
-
-    return input;
-}
+    const saved =
+        localStorage.getItem(
+            PLAYERS_KEY
+        );
 
 
-function createScoreRows(
-    game,
-    categories
-) {
+    if (!saved) {
 
-    const fragment =
-        document.createDocumentFragment();
-
-    categories.forEach(category => {
-
-        const row =
-            document.createElement("div");
-
-        row.className =
-            "score-row";
+        return [
+            ...DEFAULT_PLAYERS
+        ];
+    }
 
 
-        const label =
-            document.createElement("div");
+    try {
 
-        label.className =
-            "score-label";
-
-        label.textContent =
-            category.label;
+        const loaded =
+            JSON.parse(saved);
 
 
-        row.appendChild(label);
-
-
-        for (
-            let player = 1;
-            player <= 2;
-            player++
+        if (
+            !Array.isArray(loaded) ||
+            loaded.length < 1
         ) {
 
-            const cell =
-                document.createElement("div");
-
-            cell.appendChild(
-                createInput(
-                    game,
-                    category.key,
-                    player
-                )
-            );
-
-            row.appendChild(cell);
+            return [
+                ...DEFAULT_PLAYERS
+            ];
         }
 
 
-        fragment.appendChild(row);
-    });
+        return loaded
+            .slice(0, MAX_PLAYERS)
+            .map(
+                (name, index) =>
+                    String(name || `P${index + 1}`)
+            );
 
 
-    return fragment;
+    } catch {
+
+        return [
+            ...DEFAULT_PLAYERS
+        ];
+    }
 }
 
 
-function buildScorecards() {
+function savePlayers() {
 
-    document
-        .getElementById("yatzyUpperRows")
-        .appendChild(
-            createScoreRows(
-                "yatzy",
-                upperCategories
-            )
+    localStorage.setItem(
+        PLAYERS_KEY,
+        JSON.stringify(players)
+    );
+}
+
+
+/*
+ * Adds a new player.
+ *
+ * New players automatically become:
+ *
+ * P3
+ * P4
+ */
+function addPlayer() {
+
+    if (
+        players.length >= MAX_PLAYERS
+    ) {
+        return;
+    }
+
+
+    const nextNumber =
+        players.length + 1;
+
+
+    players.push(
+        `P${nextNumber}`
+    );
+
+
+    /*
+     * New player gets a fresh
+     * re-roll counter.
+     */
+    rerolls[players.length] =
+        DEFAULT_REROLLS;
+
+
+    savePlayers();
+    saveRerolls();
+
+
+    rebuildScorecards();
+
+    rebuildStickyBar();
+
+    loadScoresForGame(
+        currentGame
+    );
+
+    update();
+}
+
+
+/*
+ * Change one player's name.
+ */
+function updatePlayerName(
+    playerIndex,
+    newName
+) {
+
+    const cleaned =
+        newName.trim();
+
+
+    if (!cleaned) {
+
+        players[playerIndex] =
+            `P${playerIndex + 1}`;
+
+    } else {
+
+        players[playerIndex] =
+            cleaned;
+    }
+
+
+    savePlayers();
+
+    updatePlayerNames();
+
+    rebuildStickyBar();
+
+    update();
+}
+
+
+/* =========================================
+   RE-ROLL MANAGEMENT
+   ========================================= */
+
+function loadRerolls() {
+
+    const saved =
+        localStorage.getItem(
+            REROLLS_KEY
         );
 
 
-    document
-        .getElementById("yatzyLowerRows")
-        .appendChild(
-            createScoreRows(
-                "yatzy",
-                yatzyLowerCategories
-            )
+    const defaults = {};
+
+    for (
+        let i = 1;
+        i <= MAX_PLAYERS;
+        i++
+    ) {
+        defaults[i] =
+            DEFAULT_REROLLS;
+    }
+
+
+    if (!saved) {
+        return defaults;
+    }
+
+
+    try {
+
+        const data =
+            JSON.parse(saved);
+
+
+        for (
+            let i = 1;
+            i <= MAX_PLAYERS;
+            i++
+        ) {
+
+            const value =
+                Number(data[i]);
+
+
+            defaults[i] =
+                Number.isFinite(value)
+                    ? Math.max(0, value)
+                    : DEFAULT_REROLLS;
+        }
+
+
+        return defaults;
+
+
+    } catch {
+
+        return defaults;
+    }
+}
+
+
+function saveRerolls() {
+
+    localStorage.setItem(
+        REROLLS_KEY,
+        JSON.stringify(rerolls)
+    );
+}
+
+
+function changeRerolls(
+    playerNumber,
+    amount
+) {
+
+    rerolls[playerNumber] =
+        Math.max(
+            0,
+            rerolls[playerNumber] + amount
         );
 
 
-    document
-        .getElementById("maxUpperRows")
-        .appendChild(
-            createScoreRows(
-                "max",
-                upperCategories
-            )
-        );
+    saveRerolls();
+
+    updateRerollDisplay();
+}
 
 
-    document
-        .getElementById("maxLowerRows")
-        .appendChild(
-            createScoreRows(
-                "max",
-                maxLowerCategories
-            )
-        );
+function updateRerollDisplay() {
+
+    for (
+        let i = 1;
+        i <= players.length;
+        i++
+    ) {
+
+        const element =
+            document.getElementById(
+                `rerolls${i}`
+            );
+
+
+        if (element) {
+
+            element.textContent =
+                rerolls[i];
+        }
+    }
 }
 
 
@@ -1121,13 +1223,16 @@ function getStoredData() {
         const data =
             JSON.parse(saved);
 
+
         return {
+
             yatzy:
                 data.yatzy || {},
 
             max:
                 data.max || {}
         };
+
 
     } catch {
 
@@ -1151,6 +1256,7 @@ function saveGame() {
 
             const game =
                 input.dataset.game;
+
 
             const key =
                 input.dataset.cat +
@@ -1186,6 +1292,7 @@ function loadScoresForGame(game) {
     const data =
         getStoredData();
 
+
     const scores =
         data[game] || {};
 
@@ -1211,7 +1318,821 @@ function loadScoresForGame(game) {
 
 
 /* =========================================
-   SCORE CALCULATION
+   SCORECARD BUILDING
+   ========================================= */
+
+function createInput(
+    game,
+    category,
+    player
+) {
+
+    const input =
+        document.createElement("input");
+
+
+    input.className =
+        "score-input score";
+
+
+    input.type =
+        "number";
+
+
+    input.inputMode =
+        "numeric";
+
+
+    input.min =
+        "0";
+
+
+    input.step =
+        "1";
+
+
+    input.dataset.game =
+        game;
+
+
+    input.dataset.cat =
+        category;
+
+
+    input.dataset.player =
+        player;
+
+
+    return input;
+}
+
+
+/*
+ * Set the grid columns based on
+ * the number of players.
+ */
+function getGridTemplate() {
+
+    /*
+     * Category column is at least 150px.
+     * Player columns share the rest.
+     */
+    return `minmax(150px, 1fr) repeat(${players.length}, minmax(62px, 1fr))`;
+}
+
+
+/*
+ * Create a standard row:
+ *
+ * Category | P1 | P2 | P3 | P4
+ */
+function createStandardRow(
+    label,
+    className = ""
+) {
+
+    const row =
+        document.createElement("div");
+
+
+    row.className =
+        `score-row ${className}`.trim();
+
+
+    row.style.gridTemplateColumns =
+        getGridTemplate();
+
+
+    const labelCell =
+        document.createElement("div");
+
+
+    labelCell.textContent =
+        label;
+
+
+    row.appendChild(
+        labelCell
+    );
+
+
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
+
+        const cell =
+            document.createElement("div");
+
+
+        row.appendChild(
+            cell
+        );
+    }
+
+
+    return row;
+}
+
+
+/*
+ * Create a score row with inputs.
+ */
+function createScoreRow(
+    game,
+    category
+) {
+
+    const row =
+        document.createElement("div");
+
+
+    row.className =
+        "score-row";
+
+
+    row.style.gridTemplateColumns =
+        getGridTemplate();
+
+
+    const label =
+        document.createElement("div");
+
+
+    label.className =
+        "score-label";
+
+
+    label.textContent =
+        category.label;
+
+
+    row.appendChild(
+        label
+    );
+
+
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
+
+        const cell =
+            document.createElement("div");
+
+
+        cell.appendChild(
+            createInput(
+                game,
+                category.key,
+                player
+            )
+        );
+
+
+        row.appendChild(
+            cell
+        );
+    }
+
+
+    return row;
+}
+
+
+/*
+ * Creates the header:
+ *
+ * Category | Marjo | Aapeli | P3 | P4
+ */
+function createHeader(
+    containerId
+) {
+
+    const container =
+        document.getElementById(
+            containerId
+        );
+
+
+    container.innerHTML =
+        "";
+
+
+    container.style.gridTemplateColumns =
+        getGridTemplate();
+
+
+    const categoryCell =
+        document.createElement("div");
+
+
+    categoryCell.textContent =
+        "Category";
+
+
+    container.appendChild(
+        categoryCell
+    );
+
+
+    players.forEach(
+        (name, index) => {
+
+            const cell =
+                document.createElement("div");
+
+
+            const input =
+                document.createElement(
+                    "input"
+                );
+
+
+            input.className =
+                "player-name-input";
+
+
+            input.type =
+                "text";
+
+
+            input.value =
+                name;
+
+
+            input.placeholder =
+                `P${index + 1}`;
+
+
+            input.maxLength =
+                20;
+
+
+            input.title =
+                "Tap to rename player";
+
+
+            input.addEventListener(
+                "change",
+                () => {
+
+                    updatePlayerName(
+                        index,
+                        input.value
+                    );
+                }
+            );
+
+
+            input.addEventListener(
+                "blur",
+                () => {
+
+                    updatePlayerName(
+                        index,
+                        input.value
+                    );
+                }
+            );
+
+
+            cell.appendChild(
+                input
+            );
+
+
+            container.appendChild(
+                cell
+            );
+        }
+    );
+}
+
+
+/*
+ * Rebuild the whole scorecard after
+ * adding a player.
+ */
+function rebuildScorecards() {
+
+    /*
+     * Clear existing rows.
+     */
+    const ids = [
+
+        "yatzyUpperRows",
+        "yatzyLowerRows",
+
+        "maxUpperRows",
+        "maxLowerRows"
+
+    ];
+
+
+    ids.forEach(id => {
+
+        document.getElementById(
+            id
+        ).innerHTML = "";
+    });
+
+
+    /*
+     * Headers.
+     */
+    createHeader(
+        "yatzyHeader"
+    );
+
+    createHeader(
+        "maxHeader"
+    );
+
+
+    /*
+     * Section rows.
+     */
+    setupSectionRow(
+        "yatzyUpperSection",
+        "Upper Section"
+    );
+
+    setupSectionRow(
+        "yatzyLowerSection",
+        "Lower Section"
+    );
+
+    setupSectionRow(
+        "maxUpperSection",
+        "Upper Section"
+    );
+
+    setupSectionRow(
+        "maxLowerSection",
+        "Lower Section"
+    );
+
+
+    /*
+     * Upper categories.
+     */
+    upperCategories.forEach(
+        category => {
+
+            document
+                .getElementById(
+                    "yatzyUpperRows"
+                )
+                .appendChild(
+                    createScoreRow(
+                        "yatzy",
+                        category
+                    )
+                );
+
+
+            document
+                .getElementById(
+                    "maxUpperRows"
+                )
+                .appendChild(
+                    createScoreRow(
+                        "max",
+                        category
+                    )
+                );
+        }
+    );
+
+
+    /*
+     * Lower Yatzy categories.
+     */
+    yatzyLowerCategories.forEach(
+        category => {
+
+            document
+                .getElementById(
+                    "yatzyLowerRows"
+                )
+                .appendChild(
+                    createScoreRow(
+                        "yatzy",
+                        category
+                    )
+                );
+        }
+    );
+
+
+    /*
+     * Lower Max Yatzy categories.
+     */
+    maxLowerCategories.forEach(
+        category => {
+
+            document
+                .getElementById(
+                    "maxLowerRows"
+                )
+                .appendChild(
+                    createScoreRow(
+                        "max",
+                        category
+                    )
+                );
+        }
+    );
+
+
+    /*
+     * Calculated rows.
+     */
+    buildCalculatedRows();
+}
+
+
+/*
+ * Section row helper.
+ */
+function setupSectionRow(
+    id,
+    label
+) {
+
+    const row =
+        document.getElementById(id);
+
+
+    row.innerHTML =
+        "";
+
+
+    row.style.gridTemplateColumns =
+        getGridTemplate();
+
+
+    const first =
+        document.createElement("div");
+
+
+    first.textContent =
+        label;
+
+
+    row.appendChild(
+        first
+    );
+
+
+    for (
+        let i = 0;
+        i < players.length;
+        i++
+    ) {
+
+        const empty =
+            document.createElement("div");
+
+
+        row.appendChild(
+            empty
+        );
+    }
+}
+
+
+/*
+ * Build calculated rows.
+ */
+function buildCalculatedRows() {
+
+    buildCalculatedRow(
+        "yatzyUpperTotalRow",
+        "Upper Total",
+        "yatzyUpper"
+    );
+
+
+    buildCalculatedRow(
+        "yatzyBonusRow",
+        "Bonus",
+        "yatzyBonus"
+    );
+
+
+    buildCalculatedRow(
+        "yatzyTotalRow",
+        "🏆 TOTAL",
+        "yatzyTotal",
+        true
+    );
+
+
+    buildCalculatedRow(
+        "maxUpperTotalRow",
+        "Upper Total",
+        "maxUpper"
+    );
+
+
+    buildCalculatedRow(
+        "maxBonusRow",
+        "Bonus",
+        "maxBonus"
+    );
+
+
+    buildCalculatedRow(
+        "maxTotalRow",
+        "🏆 TOTAL",
+        "maxTotal",
+        true
+    );
+}
+
+
+/*
+ * Create a calculated row.
+ */
+function buildCalculatedRow(
+    id,
+    label,
+    prefix,
+    totalRow = false
+) {
+
+    const row =
+        document.getElementById(id);
+
+
+    row.innerHTML =
+        "";
+
+
+    row.style.gridTemplateColumns =
+        getGridTemplate();
+
+
+    const labelCell =
+        document.createElement("div");
+
+
+    if (totalRow) {
+
+        labelCell.innerHTML =
+            `<strong>${label}</strong>`;
+
+    } else {
+
+        labelCell.textContent =
+            label;
+    }
+
+
+    row.appendChild(
+        labelCell
+    );
+
+
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
+
+        const cell =
+            document.createElement("div");
+
+
+        cell.id =
+            `${prefix}${player}`;
+
+
+        cell.className =
+            "calculated";
+
+
+        if (
+            label === "Bonus"
+        ) {
+            cell.classList.add(
+                "bonus"
+            );
+        }
+
+
+        row.appendChild(
+            cell
+        );
+    }
+}
+
+
+/* =========================================
+   PLAYER HEADER / GRID UPDATE
+   ========================================= */
+
+function updatePlayerNames() {
+
+    document
+        .querySelectorAll(
+            ".player-name-input"
+        )
+        .forEach(
+            (input, index) => {
+
+                if (
+                    players[index] !== undefined
+                ) {
+
+                    input.value =
+                        players[index];
+                }
+            }
+        );
+}
+
+
+/*
+ * Update every score row grid width.
+ */
+function updateGridColumns() {
+
+    const template =
+        getGridTemplate();
+
+
+    document
+        .querySelectorAll(
+            ".score-row"
+        )
+        .forEach(row => {
+
+            row.style.gridTemplateColumns =
+                template;
+        });
+}
+
+
+/* =========================================
+   STICKY PLAYER BAR
+   ========================================= */
+
+function rebuildStickyBar() {
+
+    const container =
+        document.getElementById(
+            "stickyInner"
+        );
+
+
+    container.innerHTML =
+        "";
+
+
+    /*
+     * One column per player.
+     */
+    container.style.gridTemplateColumns =
+        `repeat(${players.length}, minmax(0, 1fr))`;
+
+
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
+
+        const status =
+            document.createElement("div");
+
+
+        status.className =
+            "player-status";
+
+
+        status.innerHTML = `
+
+            <div class="player-status-header">
+
+                <span
+                    id="stickyName${player}"
+                    class="player-name-small"
+                >
+                    ${escapeHtml(
+                        players[player - 1]
+                    )}
+                </span>
+
+                <span class="score-title">
+                    Total
+                </span>
+
+            </div>
+
+
+            <div
+                id="stickyTotal${player}"
+                class="total-score"
+            >
+                0
+            </div>
+
+
+            <div
+                id="rerollArea${player}"
+                class="reroll-area hidden"
+            >
+
+                <span class="reroll-label">
+                    Re-rolls
+                </span>
+
+
+                <div class="reroll-controls">
+
+                    <button
+                        class="reroll-button"
+                        type="button"
+                        onclick="changeRerolls(${player}, -1)"
+                        aria-label="Use one re-roll"
+                    >
+                        −
+                    </button>
+
+
+                    <span
+                        id="rerolls${player}"
+                        class="reroll-number"
+                    >
+                        ${rerolls[player]}
+                    </span>
+
+
+                    <button
+                        class="reroll-button"
+                        type="button"
+                        onclick="changeRerolls(${player}, 1)"
+                        aria-label="Add one re-roll"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+
+        container.appendChild(
+            status
+        );
+    }
+
+
+    updateRerollVisibility();
+
+    updateRerollDisplay();
+}
+
+
+/*
+ * Max Yatzy shows re-roll controls.
+ * Normal Yatzy hides them.
+ */
+function updateRerollVisibility() {
+
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
+
+        const area =
+            document.getElementById(
+                `rerollArea${player}`
+            );
+
+
+        if (!area) {
+            continue;
+        }
+
+
+        area.classList.toggle(
+            "hidden",
+            currentGame !== "max"
+        );
+    }
+}
+
+
+/* =========================================
+   SCORE CALCULATIONS
    ========================================= */
 
 function getScore(
@@ -1250,13 +2171,19 @@ function getScore(
 }
 
 
+/*
+ * Upper section total.
+ */
 function getUpperTotal(
     game,
     player
 ) {
 
     return upperCategories.reduce(
-        (sum, category) => {
+        (
+            sum,
+            category
+        ) => {
 
             return sum +
                 getScore(
@@ -1271,18 +2198,20 @@ function getUpperTotal(
 }
 
 
-/* =========================================
-   NORMAL YATZY CALCULATION
-   ========================================= */
-
+/*
+ * Normal Yatzy.
+ */
 function updateYatzy() {
 
-    const totals = [0, 0];
+    const totals =
+        Array(
+            players.length
+        ).fill(0);
 
 
     for (
         let player = 1;
-        player <= 2;
+        player <= players.length;
         player++
     ) {
 
@@ -1338,32 +2267,38 @@ function updateYatzy() {
     }
 
 
-    updateWinner(
-        "yatzyTotal1",
-        "yatzyTotal2",
+    updateWinners(
+        "yatzyTotal",
         totals
     );
 
 
     updateStickyTotals(
-        totals[0],
-        totals[1]
+        totals
     );
 }
 
 
-/* =========================================
-   MAX YATZY CALCULATION
-   ========================================= */
-
+/*
+ * Max Yatzy.
+ *
+ * Upper bonus threshold:
+ * 75 points.
+ *
+ * Bonus:
+ * 50 points.
+ */
 function updateMax() {
 
-    const totals = [0, 0];
+    const totals =
+        Array(
+            players.length
+        ).fill(0);
 
 
     for (
         let player = 1;
-        player <= 2;
+        player <= players.length;
         player++
     ) {
 
@@ -1373,12 +2308,6 @@ function updateMax() {
                 player
             );
 
-
-        /*
-         * Max Yatzy:
-         * 75 or more in the upper section
-         * gives 50 bonus points.
-         */
 
         const bonus =
             upper >= 75
@@ -1425,76 +2354,122 @@ function updateMax() {
     }
 
 
-    updateWinner(
-        "maxTotal1",
-        "maxTotal2",
+    updateWinners(
+        "maxTotal",
         totals
     );
 
 
     updateStickyTotals(
-        totals[0],
-        totals[1]
+        totals
     );
 }
 
 
 /* =========================================
-   WINNER / STICKY TOTAL
+   WINNER HANDLING
    ========================================= */
 
-function updateWinner(
-    id1,
-    id2,
+function updateWinners(
+    prefix,
     totals
 ) {
 
-    const total1 =
-        document.getElementById(id1);
+    /*
+     * Remove winner highlighting.
+     */
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
 
-    const total2 =
-        document.getElementById(id2);
+        const element =
+            document.getElementById(
+                `${prefix}${player}`
+            );
 
 
-    total1.classList.remove(
-        "winner"
-    );
+        if (element) {
 
-    total2.classList.remove(
-        "winner"
-    );
+            element.classList.remove(
+                "winner"
+            );
+        }
+    }
 
 
-    if (totals[0] > totals[1]) {
-
-        total1.classList.add(
-            "winner"
+    /*
+     * Find the highest score.
+     */
+    const highest =
+        Math.max(
+            ...totals
         );
 
-    } else if (totals[1] > totals[0]) {
 
-        total2.classList.add(
+    /*
+     * Highlight only if there
+     * is an actual score lead.
+     */
+    const hasLead =
+        totals.filter(
+            score =>
+                score === highest
+        ).length === 1;
+
+
+    if (!hasLead) {
+        return;
+    }
+
+
+    const winnerIndex =
+        totals.indexOf(
+            highest
+        );
+
+
+    const winnerElement =
+        document.getElementById(
+            `${prefix}${winnerIndex + 1}`
+        );
+
+
+    if (winnerElement) {
+
+        winnerElement.classList.add(
             "winner"
         );
     }
 }
 
 
+/*
+ * Sticky totals.
+ */
 function updateStickyTotals(
-    player1,
-    player2
+    totals
 ) {
 
-    document.getElementById(
-        "stickyTotal1"
-    ).textContent =
-        player1;
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
+
+        const element =
+            document.getElementById(
+                `stickyTotal${player}`
+            );
 
 
-    document.getElementById(
-        "stickyTotal2"
-    ).textContent =
-        player2;
+        if (element) {
+
+            element.textContent =
+                totals[player - 1];
+        }
+    }
 }
 
 
@@ -1512,68 +2487,113 @@ function setGame(game) {
         game === "max";
 
 
-    document.getElementById(
-        "yatzyBtn"
-    ).classList.toggle(
-        "active",
-        !isMax
+    document
+        .getElementById(
+            "yatzyBtn"
+        )
+        .classList.toggle(
+            "active",
+            !isMax
+        );
+
+
+    document
+        .getElementById(
+            "maxBtn"
+        )
+        .classList.toggle(
+            "active",
+            isMax
+        );
+
+
+    document
+        .getElementById(
+            "yatzyCard"
+        )
+        .classList.toggle(
+            "hidden",
+            isMax
+        );
+
+
+    document
+        .getElementById(
+            "maxCard"
+        )
+        .classList.toggle(
+            "hidden",
+            !isMax
+        );
+
+
+    loadScoresForGame(
+        game
     );
 
 
-    document.getElementById(
-        "maxBtn"
-    ).classList.toggle(
-        "active",
-        isMax
-    );
+    updateRerollVisibility();
+
+    update();
+
+    saveGame();
+}
 
 
-    document.getElementById(
-        "yatzyCard"
-    ).classList.toggle(
-        "hidden",
-        isMax
-    );
+/* =========================================
+   RESET GAME
+   ========================================= */
+
+function resetGame() {
+
+    const confirmed =
+        confirm(
+            "Reset the current game?\n\n" +
+            "All scores for the current game will be cleared.\n" +
+            "All player re-roll counters will be set to 0."
+        );
 
 
-    document.getElementById(
-        "maxCard"
-    ).classList.toggle(
-        "hidden",
-        !isMax
-    );
+    if (!confirmed) {
+        return;
+    }
 
 
     /*
-     * Re-roll controls only appear
-     * when Max Yatzy is selected.
+     * Clear only the currently
+     * selected game's score inputs.
      */
+    document
+        .querySelectorAll(
+            `.score[data-game="${currentGame}"]`
+        )
+        .forEach(input => {
 
-    document.getElementById(
-        "rerollArea1"
-    ).classList.toggle(
-        "hidden-reroll",
-        !isMax
-    );
-
-
-    document.getElementById(
-        "rerollArea2"
-    ).classList.toggle(
-        "hidden-reroll",
-        !isMax
-    );
+            input.value =
+                "";
+        });
 
 
-    document.getElementById(
-        "gameTitle"
-    ).textContent =
-        isMax
-            ? "🎲 Max Yatzy"
-            : "🎲 Yatzy";
+    /*
+     * Reset all existing players'
+     * re-roll counters.
+     */
+    for (
+        let player = 1;
+        player <= players.length;
+        player++
+    ) {
+
+        rerolls[player] =
+            DEFAULT_REROLLS;
+    }
 
 
-    loadScoresForGame(game);
+    saveRerolls();
+
+    updateRerollDisplay();
+
+    saveGame();
 
     update();
 }
@@ -1585,7 +2605,9 @@ function setGame(game) {
 
 function update() {
 
-    if (currentGame === "max") {
+    if (
+        currentGame === "max"
+    ) {
 
         updateMax();
 
@@ -1596,6 +2618,8 @@ function update() {
 
 
     updateRerollDisplay();
+
+    updateRerollVisibility();
 
     saveGame();
 }
@@ -1609,32 +2633,90 @@ document.addEventListener(
     "input",
     event => {
 
+        /*
+         * Score changes.
+         */
         if (
             event.target.classList.contains(
                 "score"
             )
         ) {
+
             update();
         }
+
+
+        /*
+         * Player-name changes are
+         * handled separately.
+         */
     }
 );
+
+
+/* =========================================
+   ESCAPE HTML
+   ========================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+}
 
 
 /* =========================================
    START APPLICATION
    ========================================= */
 
-buildScorecards();
+/*
+ * Build everything for the first time.
+ */
+rebuildScorecards();
 
+rebuildStickyBar();
+
+
+/*
+ * Load scores for the currently
+ * selected game.
+ */
 loadScoresForGame(
     currentGame
 );
 
+
+/*
+ * Set correct game visibility.
+ */
 setGame(
     currentGame
 );
 
-updateRerollDisplay();
+
+/*
+ * Final UI update.
+ */
+update();
 
 </script>
 
