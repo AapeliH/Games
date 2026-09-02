@@ -28,9 +28,66 @@
 
     .page { max-width: 960px; margin: 0 auto; }
 
-    header { margin-bottom: 1.75rem; }
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+    }
     header h1 { font-size: 1.6rem; font-weight: 700; color: var(--green); letter-spacing: -0.02em; }
     header p  { color: var(--muted); font-size: 0.875rem; margin-top: 0.25rem; }
+
+    /* ── Proxy toggle ── */
+    .proxy-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+      margin-top: 0.25rem;
+    }
+    .proxy-toggle label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .toggle-track {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      cursor: pointer;
+    }
+    .toggle-track input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+    .toggle-thumb {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 99px;
+      transition: background 0.2s;
+    }
+    .toggle-thumb::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      background: var(--muted);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle-track input:checked + .toggle-thumb { background: var(--purple); }
+    .toggle-track input:checked + .toggle-thumb::after {
+      transform: translateX(16px);
+      background: #fff;
+    }
 
     /* ── Status bar ── */
     #status {
@@ -45,7 +102,6 @@
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
-
     .spinner {
       width: 16px; height: 16px;
       border: 2px solid var(--border);
@@ -55,7 +111,6 @@
       flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     #progress-bar-wrap {
       height: 3px; background: var(--border);
       border-radius: 99px; overflow: hidden; flex: 1;
@@ -74,14 +129,12 @@
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
-
     .stat-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 1rem 1rem 1.1rem;
     }
-
     .stat-card .card-title {
       font-size: 0.7rem;
       font-weight: 700;
@@ -90,10 +143,7 @@
       color: var(--muted);
       margin-bottom: 0.75rem;
     }
-
-    .stat-card .card-title span {
-      color: var(--purple);
-    }
+    .stat-card .card-title span { color: var(--purple); }
 
     .podium-row {
       display: flex;
@@ -103,94 +153,40 @@
       border-bottom: 1px solid var(--border);
     }
     .podium-row:last-child { border-bottom: none; }
-
     .rank-num {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--muted);
-      width: 1.1rem;
-      flex-shrink: 0;
+      font-size: 0.7rem; font-weight: 700;
+      color: var(--muted); width: 1.1rem; flex-shrink: 0;
     }
     .rank-num.gold   { color: #f0b429; }
     .rank-num.silver { color: #a0aec0; }
     .rank-num.bronze { color: #c27c3e; }
-
     .podium-name {
-      flex: 1;
-      font-size: 0.82rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      flex: 1; font-size: 0.82rem;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-
-    .podium-pts {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--green);
-      white-space: nowrap;
-    }
+    .podium-pts { font-size: 0.82rem; font-weight: 700; color: var(--green); white-space: nowrap; }
 
     .player-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 0;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.35rem 0; border-bottom: 1px solid var(--border);
     }
     .player-row:last-child { border-bottom: none; }
-
-    .player-name {
-      flex: 1;
-      font-size: 0.82rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .player-count {
-      font-size: 0.75rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .player-bar-wrap {
-      width: 100%;
-      height: 2px;
-      background: var(--border);
-      border-radius: 99px;
-      margin-top: 0.2rem;
-      overflow: hidden;
-    }
-    .player-bar {
-      height: 100%;
-      background: var(--green);
-      border-radius: 99px;
-    }
+    .player-name { flex: 1; font-size: 0.82rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .player-count { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .player-bar-wrap { width: 100%; height: 2px; background: var(--border); border-radius: 99px; margin-top: 0.2rem; overflow: hidden; }
+    .player-bar { height: 100%; background: var(--green); border-radius: 99px; }
 
     /* ── Table ── */
-    #table-wrap {
-      overflow-x: auto;
-      display: none;
-    }
+    #table-wrap { overflow-x: auto; display: none; }
     table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-    thead tr {
-      background: var(--surface);
-      border-bottom: 2px solid var(--purple);
-    }
+    thead tr { background: var(--surface); border-bottom: 2px solid var(--purple); }
     th {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      font-weight: 600;
-      color: var(--muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
+      padding: 0.75rem 1rem; text-align: left;
+      font-weight: 600; color: var(--muted);
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.05em; white-space: nowrap;
     }
-    tbody tr {
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
     tbody tr:hover { background: var(--surface); }
     tbody tr.winner-row { background: var(--winner); }
     tbody tr.winner-row:hover { background: #203027; }
@@ -198,34 +194,30 @@
     .gw-cell { font-weight: 700; color: var(--muted); width: 3rem; }
     .pts-cell { font-weight: 700; color: var(--green); }
     .badge {
-      display: inline-block;
-      background: var(--purple);
-      color: #fff;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 1px 6px;
-      border-radius: 99px;
-      margin-left: 6px;
-      vertical-align: middle;
-      letter-spacing: 0.04em;
+      display: inline-block; background: var(--purple); color: #fff;
+      font-size: 0.65rem; font-weight: 700; padding: 1px 6px;
+      border-radius: 99px; margin-left: 6px; vertical-align: middle; letter-spacing: 0.04em;
     }
 
+    /* ── Error box ── */
     .error {
-      background: #2a1010;
-      border: 1px solid #5a1a1a;
-      border-radius: 8px;
-      padding: 1.25rem;
-      font-size: 0.875rem;
-      line-height: 1.6;
-      display: none;
+      background: #2a1010; border: 1px solid #5a1a1a;
+      border-radius: 8px; padding: 1.25rem;
+      font-size: 0.875rem; line-height: 1.6; display: none;
     }
     .error strong { color: #f87171; display: block; margin-bottom: 0.5rem; }
     .error code { background: #1a0808; padding: 2px 6px; border-radius: 4px; font-size: 0.82rem; }
+    .retry-btn {
+      display: inline-block; margin-top: 0.85rem;
+      background: var(--purple); color: #fff;
+      border: none; border-radius: 6px;
+      padding: 0.45rem 1rem; font-size: 0.82rem;
+      font-weight: 600; cursor: pointer;
+    }
+    .retry-btn:hover { opacity: 0.85; }
 
     /* ── Responsive ── */
-    @media (max-width: 700px) {
-      #top-stats { grid-template-columns: 1fr 1fr; }
-    }
+    @media (max-width: 700px) { #top-stats { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 420px) {
       #top-stats { grid-template-columns: 1fr; }
       th, td { padding: 0.6rem 0.65rem; }
@@ -237,8 +229,17 @@
 <div class="page">
 
   <header>
-    <h1>FPL League Dashboard</h1>
-    <p>League 1130463 &mdash; Gameweek top scorers &nbsp;<span style="color:var(--border);font-size:0.75rem">v2026-09-02-1843</span></p>
+    <div>
+      <h1>FPL League Dashboard</h1>
+      <p>League 1130463 &mdash; Gameweek top scorers &nbsp;<span style="color:var(--border);font-size:0.75rem">v2026-09-02-1901</span></p>
+    </div>
+    <div class="proxy-toggle">
+      <label for="proxy-switch">Proxy</label>
+      <label class="toggle-track">
+        <input type="checkbox" id="proxy-switch" checked />
+        <span class="toggle-thumb"></span>
+      </label>
+    </div>
   </header>
 
   <div id="status">
@@ -282,23 +283,51 @@
 <script>
   const LEAGUE_ID = 1130463;
   const BATCH     = 8;
-  const PROXY     = 'https://corsproxy.io/?url=';
+  const PROXY_URL = 'https://corsproxy.io/?url=';
 
-  const $status  = document.getElementById('status-text');
-  const $bar     = document.getElementById('progress-bar');
-  const $tbody   = document.getElementById('tbody');
-  const $errBox  = document.getElementById('error-box');
-  const $tableW  = document.getElementById('table-wrap');
-  const $topStat = document.getElementById('top-stats');
-  const $spinner = document.getElementById('spinner');
+  const $status     = document.getElementById('status-text');
+  const $bar        = document.getElementById('progress-bar');
+  const $tbody      = document.getElementById('tbody');
+  const $errBox     = document.getElementById('error-box');
+  const $tableW     = document.getElementById('table-wrap');
+  const $topStat    = document.getElementById('top-stats');
+  const $spinner    = document.getElementById('spinner');
+  const $proxySwitch = document.getElementById('proxy-switch');
+
+  $proxySwitch.addEventListener('change', reload);
+
+  function useProxy() { return $proxySwitch.checked; }
 
   function setProgress(pct, text) {
     $bar.style.width = pct + '%';
     $status.textContent = text;
   }
 
+  function resetUI() {
+    $errBox.style.display  = 'none';
+    $topStat.style.display = 'none';
+    $tableW.style.display  = 'none';
+    $tbody.innerHTML       = '';
+    $bar.style.width       = '0%';
+    $spinner.style.display = '';
+    // clear stat card content (keep titles)
+    ['card-top3','card-captain','card-in','card-out'].forEach(id => {
+      const card = document.getElementById(id);
+      Array.from(card.children).forEach(el => {
+        if (!el.classList.contains('card-title')) el.remove();
+      });
+    });
+    document.getElementById('gw-label').textContent = '—';
+  }
+
+  function reload() {
+    resetUI();
+    main();
+  }
+
   async function apiFetch(path) {
-    const url = PROXY + encodeURIComponent('https://fantasy.premierleague.com/api/' + path);
+    const base = 'https://fantasy.premierleague.com/api/' + path;
+    const url  = useProxy() ? PROXY_URL + encodeURIComponent(base) : base;
     const r = await fetch(url);
     if (!r.ok) throw new Error(`HTTP ${r.status} — ${path}`);
     return r.json();
@@ -313,17 +342,6 @@
       page++;
     }
     return teams;
-  }
-
-  async function batchFetch(ids, fn, onProgress) {
-    const results = {};
-    for (let i = 0; i < ids.length; i += BATCH) {
-      const slice = ids.slice(i, i + BATCH);
-      const res = await Promise.all(slice.map(id => fn(id).catch(() => ({ id, data: null }))));
-      res.forEach(r => { results[r.id] = r.data; });
-      onProgress(Math.min(i + BATCH, ids.length), ids.length);
-    }
-    return results;
   }
 
   /* ── Render helpers ── */
@@ -357,13 +375,11 @@
     try {
       setProgress(5, 'Fetching league standings…');
 
-      // Bootstrap + teams in parallel
       const [bootstrap, teams] = await Promise.all([
         apiFetch('bootstrap-static/'),
         fetchAllTeams(LEAGUE_ID)
       ]);
 
-      // player id → web_name
       const playerName = {};
       bootstrap.elements.forEach(p => { playerName[p.id] = p.web_name; });
 
@@ -374,25 +390,25 @@
       setProgress(15, `${teams.length} teams found — loading histories…`);
 
       // ── Phase 1: histories ──
-      const histories = await batchFetch(
-        ids,
-        id => apiFetch(`entry/${id}/history/`).then(d => ({ id, data: d.current })),
-        (done, total) => setProgress(15 + Math.round((done / total) * 40), `Histories: ${done}/${total}`)
-      );
+      const histories = {};
+      for (let i = 0; i < ids.length; i += BATCH) {
+        const slice = ids.slice(i, i + BATCH);
+        const res = await Promise.all(
+          slice.map(id => apiFetch(`entry/${id}/history/`).then(d => ({ id, data: d.current })).catch(() => ({ id, data: [] })))
+        );
+        res.forEach(r => { histories[r.id] = r.data; });
+        setProgress(15 + Math.round(((i + slice.length) / ids.length) * 40), `Histories: ${Math.min(i + BATCH, ids.length)}/${ids.length}`);
+      }
 
-      // Determine last played GW
       let maxGW = 0;
       Object.values(histories).forEach(h => {
-        if (!h) return;
-        h.forEach(e => { if (e.event > maxGW) maxGW = e.event; });
+        (h ?? []).forEach(e => { if (e.event > maxGW) maxGW = e.event; });
       });
 
       setProgress(57, `GW${maxGW} found — loading picks & transfers…`);
 
-      // ── Phase 2: picks + transfers for each team (parallel per batch) ──
-      const picks     = {};
-      const transfers = {};
-
+      // ── Phase 2: picks + transfers ──
+      const picks = {}, transfers = {};
       for (let i = 0; i < ids.length; i += BATCH) {
         const slice = ids.slice(i, i + BATCH);
         const res = await Promise.all(slice.map(id =>
@@ -401,12 +417,8 @@
             apiFetch(`entry/${id}/transfers/`).catch(() => [])
           ]).then(([p, t]) => ({ id, picks: p?.picks ?? [], transfers: t }))
         ));
-        res.forEach(r => {
-          picks[r.id]     = r.picks;
-          transfers[r.id] = r.transfers;
-        });
-        const done = Math.min(i + BATCH, ids.length);
-        setProgress(57 + Math.round((done / ids.length) * 30), `Picks & transfers: ${done}/${ids.length}`);
+        res.forEach(r => { picks[r.id] = r.picks; transfers[r.id] = r.transfers; });
+        setProgress(57 + Math.round(((i + slice.length) / ids.length) * 30), `Picks & transfers: ${Math.min(i + BATCH, ids.length)}/${ids.length}`);
       }
 
       setProgress(89, 'Building stats…');
@@ -423,9 +435,7 @@
 
       const $c3 = document.getElementById('card-top3');
       document.getElementById('gw-label').textContent = maxGW;
-      gwScores.forEach((s, i) => {
-        $c3.appendChild(podiumRow(i + 1, meta[s.id]?.manager ?? '—', s.pts));
-      });
+      gwScores.forEach((s, i) => $c3.appendChild(podiumRow(i + 1, meta[s.id]?.manager ?? '—', s.pts)));
 
       // ── Most captained ──
       const captainCount = {};
@@ -435,13 +445,8 @@
         const name = playerName[cap.element] ?? `#${cap.element}`;
         captainCount[name] = (captainCount[name] ?? 0) + 1;
       });
-      const captains = Object.entries(captainCount)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([name, count]) => ({ name, count }));
-
-      const $cc = document.getElementById('card-captain');
-      playerRows(captains, ids.length).forEach(el => $cc.appendChild(el));
+      const captains = Object.entries(captainCount).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([name,count])=>({name,count}));
+      playerRows(captains, ids.length).forEach(el => document.getElementById('card-captain').appendChild(el));
 
       // ── Transfers in / out ──
       const transIn = {}, transOut = {};
@@ -449,20 +454,15 @@
         (transfers[id] ?? []).forEach(t => {
           if (t.event !== maxGW) return;
           const nameIn  = playerName[t.element_in]  ?? `#${t.element_in}`;
-          const nameOut = playerName[t.element_out]  ?? `#${t.element_out}`;
+          const nameOut = playerName[t.element_out] ?? `#${t.element_out}`;
           transIn[nameIn]   = (transIn[nameIn]   ?? 0) + 1;
           transOut[nameOut] = (transOut[nameOut] ?? 0) + 1;
         });
       });
-
-      const topIn  = Object.entries(transIn).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([name,count])=>({name,count}));
-      const topOut = Object.entries(transOut).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([name,count])=>({name,count}));
-
-      const $ci = document.getElementById('card-in');
-      playerRows(topIn, ids.length).forEach(el => $ci.appendChild(el));
-
-      const $co = document.getElementById('card-out');
-      playerRows(topOut, ids.length).forEach(el => $co.appendChild(el));
+      const topIn  = Object.entries(transIn).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([n,c])=>({name:n,count:c}));
+      const topOut = Object.entries(transOut).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([n,c])=>({name:n,count:c}));
+      playerRows(topIn,  ids.length).forEach(el => document.getElementById('card-in').appendChild(el));
+      playerRows(topOut, ids.length).forEach(el => document.getElementById('card-out').appendChild(el));
 
       $topStat.style.display = 'grid';
 
@@ -492,20 +492,21 @@
           <td class="gw-cell">${gw}</td>
           <td>${m ? `${m.manager}${wins > 1 ? `<span class="badge">${wins} wins</span>` : ''}` : '<span style="color:var(--muted)">—</span>'}</td>
           <td>${m ? m.team : '<span style="color:var(--muted)">—</span>'}</td>
-          <td style="text-align:right">${played && pts >= 0 ? `<span class="pts-cell">${pts}</span>` : '<span style="color:var(--muted)">—</span>'}
-          </td>`;
+          <td style="text-align:right">${played && pts >= 0 ? `<span class="pts-cell">${pts}</span>` : '<span style="color:var(--muted)">—</span>'}</td>`;
         $tbody.appendChild(tr);
       });
 
       $tableW.style.display = 'block';
-
       setProgress(100, `Done — GW${maxGW} data loaded`);
       $spinner.style.display = 'none';
 
     } catch (err) {
       console.error(err);
       $spinner.style.display = 'none';
-      $errBox.innerHTML = `<strong>Failed to load data</strong>Error: <code>${err.message}</code>`;
+      $errBox.innerHTML = `
+        <strong>Failed to load data</strong>
+        Error: <code>${err.message}</code>
+        <br><button class="retry-btn" onclick="reload()">Retry</button>`;
       $errBox.style.display = 'block';
     }
   }
