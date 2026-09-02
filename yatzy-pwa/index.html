@@ -321,7 +321,7 @@
         font-weight: 900;
     }
 
-    .l-button {
+    .reroll-button {
         width: 29px;
         height: 29px;
         padding: 0;
@@ -335,11 +335,11 @@
         line-height: 1;
     }
 
-    .l-button:active {
+    .reroll-button:active {
         transform: scale(.94);
     }
 
-    .hidden-l {
+    .hidden-reroll {
         display: none;
     }
 
@@ -403,7 +403,7 @@
             font-size: 20px;
         }
 
-        .l-button {
+        .reroll-button {
             width: 26px;
             height: 26px;
         }
@@ -561,36 +561,36 @@
             </div>
 
             <div
-                id="lArea1"
-                class="l-area hidden-l"
+                id="rerollArea1"
+                class="reroll-area hidden-reroll"
             >
 
-                <span class="l-label">
+                <span class="reroll-label">
                     Re-rolls
                 </span>
 
-                <div class="l-controls">
+                <div class="reroll-controls">
 
                     <button
-                        class="l-button"
+                        class="reroll-button"
                         type="button"
-                        onclick="changels(1, -1)"
+                        onclick="changeRerolls(1, -1)"
                         aria-label="Use one Marjo re-roll"
                     >
                         −
                     </button>
 
                     <span
-                        id="ls1"
-                        class="l-number"
+                        id="rerolls1"
+                        class="reroll-number"
                     >
                         3
                     </span>
 
                     <button
-                        class="l-button"
+                        class="reroll-button"
                         type="button"
-                        onclick="changels(1, 1)"
+                        onclick="changeRerolls(1, 1)"
                         aria-label="Add one Marjo re-roll"
                     >
                         +
@@ -745,8 +745,8 @@ function loadRerolls() {
 
     if (!saved) {
         return {
-            1: 0,
-            2: 0
+            1: 3,
+            2: 3
         };
     }
 
