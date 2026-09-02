@@ -1,0 +1,19 @@
+{
+    "name": "Yatzy Scorecard",
+    "short_name": "Yatzy",
+    "description": "Yatzy and Max Yatzy scorecard for up to 4 players",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#f4f5f7",
+    "theme_color": "#111827",
+    "icons": [
+        {
+            "src": "icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}
