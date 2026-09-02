@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FPL League Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d0f14;
+      --surface: #161a22;
+      --border:  #252b36;
+      --purple:  #7c3aed;
+      --green:   #00d4a0;
+      --text:    #e4e8f0;
+      --muted:   #7a8496;
+      --winner:  #1a2a1e;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .page { max-width: 960px; margin: 0 auto; }
+
+    header { margin-bottom: 1.75rem; }
+    header h1 { font-size: 1.6rem; font-weight: 700; color: var(--green); letter-spacing: -0.02em; }
+    header p  { color: var(--muted); font-size: 0.875rem; margin-top: 0.25rem; }
+
+    /* ── Status bar ── */
+    #status {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #progress-bar-wrap {
+      height: 3px; background: var(--border);
+      border-radius: 99px; overflow: hidden; flex: 1;
+    }
+    #progress-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--green));
+      border-radius: 99px;
+      transition: width 0.3s ease;
+    }
+
+    /* ── Top stats cards ── */
+    #top-stats {
+      display: none;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1rem 1.1rem;
+    }
+
+    .stat-card .card-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .stat-card .card-title span {
+      color: var(--purple);
+    }
+
+    .podium-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .podium-row:last-child { border-bottom: none; }
+
+    .rank-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--muted);
+      width: 1.1rem;
+      flex-shrink: 0;
+    }
+    .rank-num.gold   { color: #f0b429; }
+    .rank-num.silver { color: #a0aec0; }
+    .rank-num.bronze { color: #c27c3e; }
+
+    .podium-name {
+      flex: 1;
+      font-size: 0.82rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .podium-pts {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .player-row:last-child { border-bottom: none; }
+
+    .player-name {
+      flex: 1;
+      font-size: 0.82rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .player-count {
+      font-size: 0.75rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .player-bar-wrap {
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+      border-radius: 99px;
+      margin-top: 0.2rem;
+      overflow: hidden;
+    }
+    .player-bar {
+      height: 100%;
+      background: var(--green);
+      border-radius: 99px;
+    }
+
+    /* ── Table ── */
+    #table-wrap {
+      overflow-x: auto;
+      display: none;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    thead tr {
+      background: var(--surface);
+      border-bottom: 2px solid var(--purple);
+    }
+    th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: var(--surface); }
+    tbody tr.winner-row { background: var(--winner); }
+    tbody tr.winner-row:hover { background: #203027; }
+    td { padding: 0.75rem 1rem; white-space: nowrap; }
+    .gw-cell { font-weight: 700; color: var(--muted); width: 3rem; }
+    .pts-cell { font-weight: 700; color: var(--green); }
+    .badge {
+      display: inline-block;
+      background: var(--purple);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 99px;
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: 0.04em;
+    }
+
+    .error {
+      background: #2a1010;
+      border: 1px solid #5a1a1a;
+      border-radius: 8px;
+      padding: 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      display: none;
+    }
+    .error strong { color: #f87171; display: block; margin-bottom: 0.5rem; }
+    .error code { background: #1a0808; padding: 2px 6px; border-radius: 4px; font-size: 0.82rem; }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      #top-stats { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 420px) {
+      #top-stats { grid-template-columns: 1fr; }
+      th, td { padding: 0.6rem 0.65rem; }
+      header h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>FPL League Dashboard</h1>
+    <p>League 1130463 &mdash; Gameweek top scorers</p>
+  </header>
+
+  <div id="status">
+    <div class="spinner" id="spinner"></div>
+    <span id="status-text">Initialising&hellip;</span>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  </div>
+
+  <div id="top-stats">
+    <div class="stat-card" id="card-top3">
+      <div class="card-title">GW <span id="gw-label">—</span> Top 3</div>
+    </div>
+    <div class="stat-card" id="card-captain">
+      <div class="card-title">Most Captained</div>
+    </div>
+    <div class="stat-card" id="card-in">
+      <div class="card-title">Top Transfers In</div>
+    </div>
+    <div class="stat-card" id="card-out">
+      <div class="card-title">Top Transfers Out</div>
+    </div>
+  </div>
+
+  <div id="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>GW</th>
+          <th>Manager</th>
+          <th>Team name</th>
+          <th style="text-align:right">GW pts</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="error" id="error-box"></div>
+
+</div>
+<script>
+  const LEAGUE_ID = 1130463;
+  const BATCH     = 8;
+
+  const $status  = document.getElementById('status-text');
+  const $bar     = document.getElementById('progress-bar');
+  const $tbody   = document.getElementById('tbody');
+  const $errBox  = document.getElementById('error-box');
+  const $tableW  = document.getElementById('table-wrap');
+  const $topStat = document.getElementById('top-stats');
+  const $spinner = document.getElementById('spinner');
+
+  function setProgress(pct, text) {
+    $bar.style.width = pct + '%';
+    $status.textContent = text;
+  }
+
+  async function apiFetch(path) {
+    const r = await fetch('https://fantasy.premierleague.com/api/' + path);
+    if (!r.ok) throw new Error(`HTTP ${r.status} — ${path}`);
+    return r.json();
+  }
+
+  async function fetchAllTeams(leagueId) {
+    let page = 1, teams = [], hasNext = true;
+    while (hasNext) {
+      const d = await apiFetch(`leagues-classic/${leagueId}/standings/?page_standings=${page}`);
+      teams.push(...d.standings.results);
+      hasNext = d.standings.has_next;
+      page++;
+    }
+    return teams;
+  }
+
+  async function batchFetch(ids, fn, onProgress) {
+    const results = {};
+    for (let i = 0; i < ids.length; i += BATCH) {
+      const slice = ids.slice(i, i + BATCH);
+      const res = await Promise.all(slice.map(id => fn(id).catch(() => ({ id, data: null }))));
+      res.forEach(r => { results[r.id] = r.data; });
+      onProgress(Math.min(i + BATCH, ids.length), ids.length);
+    }
+    return results;
+  }
+
+  /* ── Render helpers ── */
+  function podiumRow(rank, name, pts) {
+    const cls = rank === 1 ? 'gold' : rank === 2 ? 'silver' : 'bronze';
+    const el = document.createElement('div');
+    el.className = 'podium-row';
+    el.innerHTML = `
+      <span class="rank-num ${cls}">${rank}</span>
+      <span class="podium-name" title="${name}">${name}</span>
+      <span class="podium-pts">${pts} pts</span>`;
+    return el;
+  }
+
+  function playerRows(items, totalTeams) {
+    const maxCount = items[0]?.count ?? 1;
+    return items.map(({ name, count }) => {
+      const pct = Math.round((count / maxCount) * 100);
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <div class="player-row">
+          <span class="player-name" title="${name}">${name}</span>
+          <span class="player-count">${count}/${totalTeams}</span>
+        </div>
+        <div class="player-bar-wrap"><div class="player-bar" style="width:${pct}%"></div></div>`;
+      return div;
+    });
+  }
+
+  async function main() {
+    try {
+      setProgress(5, 'Fetching league standings…');
+
+      // Bootstrap + teams in parallel
+      const [bootstrap, teams] = await Promise.all([
+        apiFetch('bootstrap-static/'),
+        fetchAllTeams(LEAGUE_ID)
+      ]);
+
+      // player id → web_name
+      const playerName = {};
+      bootstrap.elements.forEach(p => { playerName[p.id] = p.web_name; });
+
+      const ids = teams.map(t => t.entry);
+      const meta = {};
+      teams.forEach(t => { meta[t.entry] = { team: t.entry_name, manager: t.player_name }; });
+
+      setProgress(15, `${teams.length} teams found — loading histories…`);
+
+      // ── Phase 1: histories ──
+      const histories = await batchFetch(
+        ids,
+        id => apiFetch(`entry/${id}/history/`).then(d => ({ id, data: d.current })),
+        (done, total) => setProgress(15 + Math.round((done / total) * 40), `Histories: ${done}/${total}`)
+      );
+
+      // Determine last played GW
+      let maxGW = 0;
+      Object.values(histories).forEach(h => {
+        if (!h) return;
+        h.forEach(e => { if (e.event > maxGW) maxGW = e.event; });
+      });
+
+      setProgress(57, `GW${maxGW} found — loading picks & transfers…`);
+
+      // ── Phase 2: picks + transfers for each team (parallel per batch) ──
+      const picks     = {};
+      const transfers = {};
+
+      for (let i = 0; i < ids.length; i += BATCH) {
+        const slice = ids.slice(i, i + BATCH);
+        const res = await Promise.all(slice.map(id =>
+          Promise.all([
+            apiFetch(`entry/${id}/event/${maxGW}/picks/`).catch(() => null),
+            apiFetch(`entry/${id}/transfers/`).catch(() => [])
+          ]).then(([p, t]) => ({ id, picks: p?.picks ?? [], transfers: t }))
+        ));
+        res.forEach(r => {
+          picks[r.id]     = r.picks;
+          transfers[r.id] = r.transfers;
+        });
+        const done = Math.min(i + BATCH, ids.length);
+        setProgress(57 + Math.round((done / ids.length) * 30), `Picks & transfers: ${done}/${ids.length}`);
+      }
+
+      setProgress(89, 'Building stats…');
+
+      // ── Top 3 last GW ──
+      const gwScores = ids
+        .map(id => {
+          const row = (histories[id] ?? []).find(e => e.event === maxGW);
+          return row ? { id, pts: row.points } : null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.pts - a.pts)
+        .slice(0, 3);
+
+      const $c3 = document.getElementById('card-top3');
+      document.getElementById('gw-label').textContent = maxGW;
+      gwScores.forEach((s, i) => {
+        $c3.appendChild(podiumRow(i + 1, meta[s.id]?.manager ?? '—', s.pts));
+      });
+
+      // ── Most captained ──
+      const captainCount = {};
+      ids.forEach(id => {
+        const cap = (picks[id] ?? []).find(p => p.is_captain || p.multiplier >= 2);
+        if (!cap) return;
+        const name = playerName[cap.element] ?? `#${cap.element}`;
+        captainCount[name] = (captainCount[name] ?? 0) + 1;
+      });
+      const captains = Object.entries(captainCount)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([name, count]) => ({ name, count }));
+
+      const $cc = document.getElementById('card-captain');
+      playerRows(captains, ids.length).forEach(el => $cc.appendChild(el));
+
+      // ── Transfers in / out ──
+      const transIn = {}, transOut = {};
+      ids.forEach(id => {
+        (transfers[id] ?? []).forEach(t => {
+          if (t.event !== maxGW) return;
+          const nameIn  = playerName[t.element_in]  ?? `#${t.element_in}`;
+          const nameOut = playerName[t.element_out]  ?? `#${t.element_out}`;
+          transIn[nameIn]   = (transIn[nameIn]   ?? 0) + 1;
+          transOut[nameOut] = (transOut[nameOut] ?? 0) + 1;
+        });
+      });
+
+      const topIn  = Object.entries(transIn).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([name,count])=>({name,count}));
+      const topOut = Object.entries(transOut).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([name,count])=>({name,count}));
+
+      const $ci = document.getElementById('card-in');
+      playerRows(topIn, ids.length).forEach(el => $ci.appendChild(el));
+
+      const $co = document.getElementById('card-out');
+      playerRows(topOut, ids.length).forEach(el => $co.appendChild(el));
+
+      $topStat.style.display = 'grid';
+
+      // ── GW winners table ──
+      const gwWinners = [];
+      for (let gw = 1; gw <= 38; gw++) {
+        let topPts = -1, topEntry = null;
+        ids.forEach(id => {
+          const row = (histories[id] ?? []).find(e => e.event === gw);
+          if (row && row.points > topPts) { topPts = row.points; topEntry = id; }
+        });
+        gwWinners.push({ gw, entryId: topEntry, pts: topPts, played: gw <= maxGW });
+      }
+
+      const winCount = {};
+      gwWinners.forEach(({ entryId, played }) => {
+        if (!entryId || !played) return;
+        winCount[entryId] = (winCount[entryId] ?? 0) + 1;
+      });
+
+      gwWinners.forEach(({ gw, entryId, pts, played }) => {
+        const tr = document.createElement('tr');
+        if (entryId && played) tr.classList.add('winner-row');
+        const m    = entryId ? meta[entryId] : null;
+        const wins = entryId ? (winCount[entryId] ?? 0) : 0;
+        tr.innerHTML = `
+          <td class="gw-cell">${gw}</td>
+          <td>${m ? `${m.manager}${wins > 1 ? `<span class="badge">${wins} wins</span>` : ''}` : '<span style="color:var(--muted)">—</span>'}</td>
+          <td>${m ? m.team : '<span style="color:var(--muted)">—</span>'}</td>
+          <td style="text-align:right">${played && pts >= 0 ? `<span class="pts-cell">${pts}</span>` : '<span style="color:var(--muted)">—</span>'}
+          </td>`;
+        $tbody.appendChild(tr);
+      });
+
+      $tableW.style.display = 'block';
+
+      setProgress(100, `Done — GW${maxGW} data loaded`);
+      $spinner.style.display = 'none';
+
+    } catch (err) {
+      console.error(err);
+      $spinner.style.display = 'none';
+      $errBox.innerHTML = `<strong>Failed to load data</strong>Error: <code>${err.message}</code>`;
+      $errBox.style.display = 'block';
+    }
+  }
+
+  main();
+</script>
+</body>
+</html>
