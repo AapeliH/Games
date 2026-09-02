@@ -243,11 +243,6 @@
         justify-content: flex-start;
     }
 
-    /*
-     * Player names are now part of the
-     * upper-section row.
-     */
-
     .section-row {
         background: #f3f4f6;
 
@@ -276,6 +271,7 @@
         font-weight: 800;
 
         min-width: 0;
+        max-width: 100%;
     }
 
     .player-name-input:focus {
@@ -420,6 +416,8 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+
+        min-width: 0;
     }
 
     .score-title {
@@ -431,6 +429,7 @@
         letter-spacing: .08em;
 
         font-weight: 800;
+        flex-shrink: 0;
     }
 
     .total-score {
@@ -511,8 +510,117 @@
         transform: scale(.94);
     }
 
-    .reroll-button:disabled {
-        opacity: .4;
+    /* =========================================
+       CUSTOM RESET MODAL
+       ========================================= */
+
+    .modal-overlay {
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 2000;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+
+        background: rgba(0, 0, 0, .45);
+
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+    }
+
+    .modal-overlay.hidden {
+        display: none;
+    }
+
+    .reset-modal {
+        width: 100%;
+        max-width: 360px;
+
+        padding: 22px;
+
+        background: white;
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, .25);
+
+        text-align: center;
+
+        animation:
+            modalAppear .15s ease-out;
+    }
+
+    .reset-modal h2 {
+        margin: 0 0 8px;
+
+        font-size: 22px;
+        font-weight: 800;
+
+        color: var(--dark);
+    }
+
+    .reset-modal p {
+        margin: 0;
+
+        color: var(--muted);
+
+        font-size: 14px;
+        line-height: 1.45;
+    }
+
+    .modal-actions {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 8px;
+
+        margin-top: 20px;
+    }
+
+    .modal-actions button {
+        border: 0;
+        border-radius: 9px;
+
+        padding: 11px 10px;
+
+        font-size: 14px;
+        font-weight: 800;
+
+        cursor: pointer;
+    }
+
+    .modal-cancel {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .modal-confirm {
+        background: var(--danger);
+        color: white;
+    }
+
+    .modal-actions button:active {
+        transform: scale(.97);
+    }
+
+    @keyframes modalAppear {
+        from {
+            opacity: 0;
+            transform: scale(.96);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
     /* =========================================
@@ -617,6 +725,10 @@
 
     <header>
 
+        <!-- =====================================
+             GAME SELECTOR
+             ===================================== -->
+
         <div class="game-toggle">
 
             <button
@@ -627,6 +739,7 @@
             >
                 Yatzy · 5 Dice
             </button>
+
 
             <button
                 id="maxBtn"
@@ -640,7 +753,7 @@
 
 
         <!-- =====================================
-             PLAYER ADD / REMOVE
+             PLAYER CONTROLS
              ===================================== -->
 
         <div class="header-actions">
@@ -650,6 +763,7 @@
                 <span class="player-control-label">
                     Players
                 </span>
+
 
                 <button
                     id="removePlayerButton"
@@ -661,12 +775,14 @@
                     −
                 </button>
 
+
                 <span
                     id="playerCount"
                     class="player-count"
                 >
                     2
                 </span>
+
 
                 <button
                     id="addPlayerButton"
@@ -695,7 +811,7 @@
 
 
     <!-- =========================================
-         NORMAL YATZY
+         YATZY
          ========================================= -->
 
     <div
@@ -703,16 +819,13 @@
         class="scorecard"
     >
 
-        <!-- Player names are in Upper Section -->
         <div
             id="yatzyUpperSection"
             class="score-row section-row"
         ></div>
 
 
-        <div
-            id="yatzyUpperRows"
-        ></div>
+        <div id="yatzyUpperRows"></div>
 
 
         <div
@@ -733,9 +846,7 @@
         ></div>
 
 
-        <div
-            id="yatzyLowerRows"
-        ></div>
+        <div id="yatzyLowerRows"></div>
 
 
         <div
@@ -755,16 +866,13 @@
         class="scorecard hidden"
     >
 
-        <!-- Player names are in Upper Section -->
         <div
             id="maxUpperSection"
             class="score-row section-row"
         ></div>
 
 
-        <div
-            id="maxUpperRows"
-        ></div>
+        <div id="maxUpperRows"></div>
 
 
         <div
@@ -785,9 +893,7 @@
         ></div>
 
 
-        <div
-            id="maxLowerRows"
-        ></div>
+        <div id="maxLowerRows"></div>
 
 
         <div
@@ -814,6 +920,62 @@
 </div>
 
 
+<!-- =========================================
+     RESET CONFIRMATION MODAL
+     ========================================= -->
+
+<div
+    id="resetModal"
+    class="modal-overlay hidden"
+    aria-hidden="true"
+>
+
+    <div
+        class="reset-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="resetModalTitle"
+    >
+
+        <h2 id="resetModalTitle">
+            Reset Game?
+        </h2>
+
+
+        <p>
+            All scores for the current game will
+            be cleared and all re-roll counters
+            will be reset to 0.
+        </p>
+
+
+        <div class="modal-actions">
+
+            <button
+                id="cancelResetButton"
+                class="modal-cancel"
+                type="button"
+                onclick="closeResetModal()"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                class="modal-confirm"
+                type="button"
+                onclick="confirmReset()"
+            >
+                Reset Game
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
 
 /* =========================================
@@ -828,7 +990,7 @@ const MIN_PLAYERS = 2;
 /*
  * Initial player names.
  *
- * These can be changed here if desired.
+ * These can be changed here.
  */
 const DEFAULT_PLAYERS = [
     "P1",
@@ -836,6 +998,9 @@ const DEFAULT_PLAYERS = [
 ];
 
 
+/*
+ * Default Max Yatzy re-roll count.
+ */
 const DEFAULT_REROLLS = 0;
 
 
@@ -857,13 +1022,13 @@ const REROLLS_KEY =
 
 
 /* =========================================
-   CURRENT STATE
+   STATE
    ========================================= */
 
 let currentGame =
     localStorage.getItem(
         GAME_KEY
-    ) || "yatzy";
+    ) || "max";
 
 
 let players =
@@ -1050,14 +1215,13 @@ function getGridTemplate() {
             ${players.length},
             minmax(58px, 1fr)
         )
-    `.replace(/\s+/g, " ").trim();
+    `.replace(
+        /\s+/g,
+        " "
+    ).trim();
 }
 
 
-/*
- * Apply the current number of player columns
- * to every score row.
- */
 function updateGridColumns() {
 
     const template =
@@ -1065,7 +1229,9 @@ function updateGridColumns() {
 
 
     document
-        .querySelectorAll(".score-row")
+        .querySelectorAll(
+            ".score-row"
+        )
         .forEach(row => {
 
             row.style.gridTemplateColumns =
@@ -1075,7 +1241,7 @@ function updateGridColumns() {
 
 
 /* =========================================
-   PLAYER STORAGE
+   PLAYER LOADING
    ========================================= */
 
 function loadPlayers() {
@@ -1138,7 +1304,6 @@ function loadPlayers() {
 
         return result;
 
-
     } catch {
 
         return [
@@ -1170,16 +1335,18 @@ function addPlayer() {
     }
 
 
-    const newPlayerNumber =
+    const number =
         players.length + 1;
 
 
     players.push(
-        `P${newPlayerNumber}`
+        `P${number}`
     );
 
 
-    rerolls[players.length] =
+    rerolls[
+        players.length
+    ] =
         DEFAULT_REROLLS;
 
 
@@ -1221,14 +1388,6 @@ function removePlayer() {
         players.length;
 
 
-    /*
-     * Remove the last player.
-     *
-     * Existing saved scores for that
-     * player are also removed so that
-     * adding a new player later creates
-     * a genuinely new player.
-     */
     clearPlayerStorage(
         removedPlayer
     );
@@ -1263,9 +1422,6 @@ function removePlayer() {
 }
 
 
-/*
- * Remove stored scores for one player.
- */
 function clearPlayerStorage(
     playerNumber
 ) {
@@ -1274,8 +1430,12 @@ function clearPlayerStorage(
         getStoredData();
 
 
-    ["yatzy", "max"]
-        .forEach(game => {
+    [
+        "yatzy",
+        "max"
+    ]
+    .forEach(
+        game => {
 
             if (!data[game]) {
                 return;
@@ -1283,23 +1443,27 @@ function clearPlayerStorage(
 
 
             const suffix =
-                "_" + playerNumber;
+                "_" +
+                playerNumber;
 
 
             Object.keys(
                 data[game]
-            ).forEach(key => {
+            ).forEach(
+                key => {
 
-                if (
-                    key.endsWith(
-                        suffix
-                    )
-                ) {
+                    if (
+                        key.endsWith(
+                            suffix
+                        )
+                    ) {
 
-                    delete data[game][key];
+                        delete data[game][key];
+                    }
                 }
-            });
-        });
+            );
+        }
+    );
 
 
     localStorage.setItem(
@@ -1310,7 +1474,7 @@ function clearPlayerStorage(
 
 
 /* =========================================
-   PLAYER NAME EDITING
+   PLAYER NAMES
    ========================================= */
 
 function updatePlayerName(
@@ -1365,10 +1529,6 @@ function updatePlayerNames() {
 }
 
 
-/* =========================================
-   PLAYER CONTROL UI
-   ========================================= */
-
 function updatePlayerControls() {
 
     document.getElementById(
@@ -1391,7 +1551,7 @@ function updatePlayerControls() {
 
 
 /* =========================================
-   RE-ROLL STORAGE
+   RE-ROLL MANAGEMENT
    ========================================= */
 
 function loadRerolls() {
@@ -1440,17 +1600,18 @@ function loadRerolls() {
 
 
             defaults[i] =
-                Number.isFinite(value)
-                    ? Math.max(
-                        0,
-                        value
-                    )
-                    : DEFAULT_REROLLS;
+                Number.isFinite(
+                    value
+                )
+                ? Math.max(
+                    0,
+                    value
+                )
+                : DEFAULT_REROLLS;
         }
 
 
         return defaults;
-
 
     } catch {
 
@@ -1477,7 +1638,7 @@ function changeRerolls(
         Math.max(
             0,
             (
-                rerolls[playerNumber] ||
+                rerolls[playerNumber] ??
                 DEFAULT_REROLLS
             ) + amount
         );
@@ -1549,7 +1710,6 @@ function getStoredData() {
                 data.max || {}
         };
 
-
     } catch {
 
         return {
@@ -1567,27 +1727,31 @@ function saveGame() {
 
 
     document
-        .querySelectorAll(".score")
-        .forEach(input => {
+        .querySelectorAll(
+            ".score"
+        )
+        .forEach(
+            input => {
 
-            const game =
-                input.dataset.game;
-
-
-            const key =
-                input.dataset.cat +
-                "_" +
-                input.dataset.player;
+                const game =
+                    input.dataset.game;
 
 
-            if (!data[game]) {
-                data[game] = {};
+                const key =
+                    input.dataset.cat +
+                    "_" +
+                    input.dataset.player;
+
+
+                if (!data[game]) {
+                    data[game] = {};
+                }
+
+
+                data[game][key] =
+                    input.value;
             }
-
-
-            data[game][key] =
-                input.value;
-        });
+        );
 
 
     localStorage.setItem(
@@ -1619,24 +1783,26 @@ function loadScoresForGame(
         .querySelectorAll(
             `.score[data-game="${game}"]`
         )
-        .forEach(input => {
+        .forEach(
+            input => {
 
-            const key =
-                input.dataset.cat +
-                "_" +
-                input.dataset.player;
+                const key =
+                    input.dataset.cat +
+                    "_" +
+                    input.dataset.player;
 
 
-            input.value =
-                scores[key] !== undefined
-                    ? scores[key]
-                    : "";
-        });
+                input.value =
+                    scores[key] !== undefined
+                        ? scores[key]
+                        : "";
+            }
+        );
 }
 
 
 /* =========================================
-   CREATE SCORE INPUT
+   INPUT CREATION
    ========================================= */
 
 function createInput(
@@ -1686,10 +1852,6 @@ function createInput(
     return input;
 }
 
-
-/* =========================================
-   CREATE SCORE ROW
-   ========================================= */
 
 function createScoreRow(
     game,
@@ -1761,8 +1923,7 @@ function createScoreRow(
 
 
 /* =========================================
-   CREATE UPPER SECTION
-   WITH PLAYER NAMES
+   UPPER SECTION
    ========================================= */
 
 function buildUpperSection(
@@ -1877,7 +2038,7 @@ function buildUpperSection(
 
 
 /* =========================================
-   SECTION ROW
+   LOWER SECTION
    ========================================= */
 
 function buildSimpleSection(
@@ -1930,7 +2091,7 @@ function buildSimpleSection(
 
 
 /* =========================================
-   CALCULATED ROW
+   CALCULATED ROWS
    ========================================= */
 
 function buildCalculatedRow(
@@ -2031,26 +2192,22 @@ function buildCalculatedRow(
 
 function rebuildScorecards() {
 
-    /*
-     * Clear dynamic rows.
-     */
     [
         "yatzyUpperRows",
         "yatzyLowerRows",
         "maxUpperRows",
         "maxLowerRows"
     ]
-    .forEach(id => {
+    .forEach(
+        id => {
 
-        document.getElementById(
-            id
-        ).innerHTML = "";
-    });
+            document.getElementById(
+                id
+            ).innerHTML = "";
+        }
+    );
 
 
-    /*
-     * Upper section with player names.
-     */
     buildUpperSection(
         "yatzyUpperSection"
     );
@@ -2061,9 +2218,6 @@ function rebuildScorecards() {
     );
 
 
-    /*
-     * Lower section headers.
-     */
     buildSimpleSection(
         "yatzyLowerSection",
         "Lower Section"
@@ -2076,9 +2230,6 @@ function rebuildScorecards() {
     );
 
 
-    /*
-     * Upper score rows.
-     */
     upperCategories.forEach(
         category => {
 
@@ -2108,9 +2259,6 @@ function rebuildScorecards() {
     );
 
 
-    /*
-     * Yatzy lower section.
-     */
     yatzyLowerCategories.forEach(
         category => {
 
@@ -2128,9 +2276,6 @@ function rebuildScorecards() {
     );
 
 
-    /*
-     * Max Yatzy lower section.
-     */
     maxLowerCategories.forEach(
         category => {
 
@@ -2147,10 +2292,6 @@ function rebuildScorecards() {
         }
     );
 
-
-    /*
-     * Calculated rows.
-     */
 
     buildCalculatedRow(
         "yatzyUpperTotalRow",
@@ -2201,7 +2342,7 @@ function rebuildScorecards() {
 
 
 /* =========================================
-   STICKY BOTTOM BAR
+   STICKY PLAYER BAR
    ========================================= */
 
 function rebuildStickyBar() {
@@ -2312,6 +2453,7 @@ function rebuildStickyBar() {
                 </div>
 
             </div>
+
         `;
 
 
@@ -2472,18 +2614,22 @@ function updateYatzy() {
 
 
         yatzyLowerCategories
-            .forEach(category => {
+            .forEach(
+                category => {
 
-                total +=
-                    getScore(
-                        "yatzy",
-                        category.key,
-                        player
-                    );
-            });
+                    total +=
+                        getScore(
+                            "yatzy",
+                            category.key,
+                            player
+                        );
+                }
+            );
 
 
-        totals[player - 1] =
+        totals[
+            player - 1
+        ] =
             total;
 
 
@@ -2531,6 +2677,11 @@ function updateMax() {
             );
 
 
+        /*
+         * Max Yatzy bonus:
+         * 75+ upper-section points
+         * gives 50 bonus points.
+         */
         const bonus =
             upper >= 75
                 ? 50
@@ -2554,18 +2705,22 @@ function updateMax() {
 
 
         maxLowerCategories
-            .forEach(category => {
+            .forEach(
+                category => {
 
-                total +=
-                    getScore(
-                        "max",
-                        category.key,
-                        player
-                    );
-            });
+                    total +=
+                        getScore(
+                            "max",
+                            category.key,
+                            player
+                        );
+                }
+            );
 
 
-        totals[player - 1] =
+        totals[
+            player - 1
+        ] =
             total;
 
 
@@ -2589,7 +2744,7 @@ function updateMax() {
 
 
 /* =========================================
-   WINNER
+   WINNERS
    ========================================= */
 
 function updateWinners(
@@ -2624,7 +2779,7 @@ function updateWinners(
         );
 
 
-    const leaders =
+    const numberOfLeaders =
         totals.filter(
             score =>
                 score === highest
@@ -2632,11 +2787,12 @@ function updateWinners(
 
 
     /*
-     * Do not highlight on a tie.
+     * Don't highlight when there is a tie.
      */
     if (
-        leaders !== 1
+        numberOfLeaders !== 1
     ) {
+
         return;
     }
 
@@ -2685,14 +2841,16 @@ function updateStickyTotals(
         if (element) {
 
             element.textContent =
-                totals[player - 1] ?? 0;
+                totals[
+                    player - 1
+                ] ?? 0;
         }
     }
 }
 
 
 /* =========================================
-   GAME SWITCH
+   GAME SWITCHING
    ========================================= */
 
 function setGame(
@@ -2761,42 +2919,87 @@ function setGame(
 
 
 /* =========================================
-   RESET GAME
+   RESET MODAL
    ========================================= */
 
 function resetGame() {
 
-    const confirmed =
-        confirm(
-            "Reset the current game?\n\n" +
-            "All scores for the current game " +
-            "will be cleared.\n" +
-            "All re-roll counters will be " +
-            "set to 0."
+    const modal =
+        document.getElementById(
+            "resetModal"
         );
 
 
-    if (!confirmed) {
-        return;
-    }
+    modal.classList.remove(
+        "hidden"
+    );
+
+
+    modal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
 
     /*
-     * Clear current game's scores.
+     * Focus Cancel instead of using
+     * the browser's confirm() dialog.
+     */
+    document
+        .getElementById(
+            "cancelResetButton"
+        )
+        .focus();
+}
+
+
+function closeResetModal() {
+
+    const modal =
+        document.getElementById(
+            "resetModal"
+        );
+
+
+    modal.classList.add(
+        "hidden"
+    );
+
+
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+}
+
+
+function confirmReset() {
+
+    /*
+     * Close the custom dialog.
+     */
+    closeResetModal();
+
+
+    /*
+     * Clear only the selected game's
+     * score fields.
      */
     document
         .querySelectorAll(
             `.score[data-game="${currentGame}"]`
         )
-        .forEach(input => {
+        .forEach(
+            input => {
 
-            input.value =
-                "";
-        });
+                input.value =
+                    "";
+            }
+        );
 
 
     /*
-     * Reset re-roll counters.
+     * Reset each player's re-rolls.
      */
     for (
         let player = 1;
@@ -2902,7 +3105,7 @@ function escapeHtml(
 
 
 /* =========================================
-   START
+   START APPLICATION
    ========================================= */
 
 rebuildScorecards();
