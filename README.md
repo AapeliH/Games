@@ -11,7 +11,14 @@ Games/
 │
 ├── README.md
 │
-├── Game1/
+├── yatzy/
+│   ├── index.html
+│   ├── manifest.json
+│   ├── sw.js
+│   └── images/
+│       └── icon.svg
+│
+├── yatzy-pwa/
 │   ├── index.html
 │   ├── manifest.webmanifest
 │   ├── sw.js
@@ -19,19 +26,25 @@ Games/
 │       ├── icon-192.png
 │       └── icon-512.png
 │
-└── Game2/
-    └── ...
+└── TOWSC/
+    └── index.html
 ```
 
 Each game or project is kept in its own subfolder so that it can be developed, hosted, and maintained independently.
 
 ## 🎲 Games
 
-### Yatzy PWA
+### Yatzy Scorecard
 
-**Location:** `Yatzy/`
+**Location:** `yatzy/`
 
-### TOW score card
+A Yatzy scorecard PWA supporting both standard Yatzy (5 dice) and Max Yatzy (6 dice), with up to 4 players, re-roll tracking, and offline support.
+
+### Yatzy PWA (legacy)
+
+**Location:** `yatzy-pwa/`
+
+### TOW Score Card
 
 **Location:** `TOWSC/`
 

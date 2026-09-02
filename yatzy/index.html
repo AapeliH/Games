@@ -224,6 +224,11 @@
             0 2px 8px rgba(0, 0, 0, .05);
     }
 
+    .scorecard-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .score-row {
         display: grid;
 
@@ -320,6 +325,17 @@
             0 0 0 2px var(--accent-light);
     }
 
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
     .calculated {
         font-weight: 700;
         color: var(--muted);
@@ -395,6 +411,8 @@
     }
 
     .player-status {
+        container-type: inline-size;
+
         min-width: 0;
 
         background: var(--dark);
@@ -619,6 +637,14 @@
         transform: scale(.97);
     }
 
+    .version-string {
+        text-align: center;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 12px;
+        margin-bottom: 0;
+    }
+
     @keyframes modalAppear {
         from {
             opacity: 0;
@@ -721,6 +747,25 @@
 
         .player-status {
             padding: 6px;
+        }
+    }
+
+    @container (max-width: 110px) {
+
+        .reroll-area {
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .reroll-label {
+            display: none;
+        }
+
+        .reroll-controls {
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
         }
     }
 </style>
@@ -827,40 +872,44 @@
         class="scorecard"
     >
 
-        <div
-            id="yatzyUpperSection"
-            class="score-row section-row"
-        ></div>
+        <div class="scorecard-scroll">
+
+            <div
+                id="yatzyUpperSection"
+                class="score-row section-row"
+            ></div>
 
 
-        <div id="yatzyUpperRows"></div>
+            <div id="yatzyUpperRows"></div>
 
 
-        <div
-            id="yatzyUpperTotalRow"
-            class="score-row"
-        ></div>
+            <div
+                id="yatzyUpperTotalRow"
+                class="score-row"
+            ></div>
 
 
-        <div
-            id="yatzyBonusRow"
-            class="score-row"
-        ></div>
+            <div
+                id="yatzyBonusRow"
+                class="score-row"
+            ></div>
 
 
-        <div
-            id="yatzyLowerSection"
-            class="score-row section-row"
-        ></div>
+            <div
+                id="yatzyLowerSection"
+                class="score-row section-row"
+            ></div>
 
 
-        <div id="yatzyLowerRows"></div>
+            <div id="yatzyLowerRows"></div>
 
 
-        <div
-            id="yatzyTotalRow"
-            class="score-row total-row"
-        ></div>
+            <div
+                id="yatzyTotalRow"
+                class="score-row total-row"
+            ></div>
+
+        </div>
 
     </div>
 
@@ -874,43 +923,47 @@
         class="scorecard hidden"
     >
 
-        <div
-            id="maxUpperSection"
-            class="score-row section-row"
-        ></div>
+        <div class="scorecard-scroll">
+
+            <div
+                id="maxUpperSection"
+                class="score-row section-row"
+            ></div>
 
 
-        <div id="maxUpperRows"></div>
+            <div id="maxUpperRows"></div>
 
 
-        <div
-            id="maxUpperTotalRow"
-            class="score-row"
-        ></div>
+            <div
+                id="maxUpperTotalRow"
+                class="score-row"
+            ></div>
 
 
-        <div
-            id="maxBonusRow"
-            class="score-row"
-        ></div>
+            <div
+                id="maxBonusRow"
+                class="score-row"
+            ></div>
 
 
-        <div
-            id="maxLowerSection"
-            class="score-row section-row"
-        ></div>
+            <div
+                id="maxLowerSection"
+                class="score-row section-row"
+            ></div>
 
 
-        <div id="maxLowerRows"></div>
+            <div id="maxLowerRows"></div>
 
 
-        <div
-            id="maxTotalRow"
-            class="score-row total-row"
-        ></div>
+            <div
+                id="maxTotalRow"
+                class="score-row total-row"
+            ></div>
+
+        </div>
 
     </div>
-        <p>Version: 2026.09.02-1328</p>
+        <p class="version-string">Version: 2026.09.02-1553</p>
 </div>
 
 
@@ -1682,11 +1735,11 @@ function rebuildScorecards() {
     });
 
 
-    buildCalculatedRow("yatzyUpperTotalRow", "Upper Total", "yatzyUpper");
+    buildCalculatedRow("yatzyUpperTotalRow", "Upper Total (63)", "yatzyUpper");
     buildCalculatedRow("yatzyBonusRow",      "Bonus",       "yatzyBonus");
     buildCalculatedRow("yatzyTotalRow",      "🏆 TOTAL",    "yatzyTotal", true);
 
-    buildCalculatedRow("maxUpperTotalRow",   "Upper Total", "maxUpper");
+    buildCalculatedRow("maxUpperTotalRow",   "Upper Total (75)", "maxUpper");
     buildCalculatedRow("maxBonusRow",        "Bonus",       "maxBonus");
     buildCalculatedRow("maxTotalRow",        "🏆 TOTAL",    "maxTotal", true);
 
@@ -1734,6 +1787,8 @@ function rebuildStickyBar() {
             <div
                 id="stickyTotal${player}"
                 class="total-score"
+                aria-live="polite"
+                aria-label="${escapeHtml(players[player - 1])} total score"
             >
                 0
             </div>
@@ -2050,6 +2105,52 @@ document.addEventListener("input", event => {
 
 
 /* =========================================
+   MODAL KEYBOARD HANDLING (FOCUS TRAP + ESC)
+   ========================================= */
+
+document.addEventListener("keydown", event => {
+
+    const modal = document.getElementById("resetModal");
+
+    if (modal.classList.contains("hidden")) return;
+
+
+    if (event.key === "Escape") {
+        event.preventDefault();
+        closeResetModal();
+        return;
+    }
+
+
+    if (event.key === "Tab") {
+
+        const focusable = Array.from(
+            modal.querySelectorAll("button")
+        );
+
+        const first = focusable[0];
+        const last  = focusable[focusable.length - 1];
+
+
+        if (event.shiftKey) {
+
+            if (document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            }
+
+        } else {
+
+            if (document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        }
+    }
+});
+
+
+/* =========================================
    ESCAPE HTML
    ========================================= */
 
@@ -2077,6 +2178,10 @@ updateRerollDisplay();
 
 
 window.addEventListener("beforeunload", saveGame);
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") saveGame();
+});
 
 
 if ("serviceWorker" in navigator) {
