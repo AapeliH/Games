@@ -339,7 +339,7 @@
     }
 
     .hidden {
-        display: none;
+        display: none !important;
     }
 
     /* =========================================
@@ -902,7 +902,7 @@
         ></div>
 
     </div>
-        Version 1.2
+        Version 2026.09.02-1253
 </div>
 
 
@@ -1502,7 +1502,18 @@ function updatePlayerName(
 
     updatePlayerNames();
 
-    rebuildStickyBar();
+
+    const nameEl =
+        document.getElementById(
+            `stickyName${playerIndex + 1}`
+        );
+
+    if (nameEl) {
+
+        nameEl.textContent =
+            players[playerIndex];
+    }
+
 
     update();
 }
@@ -1764,6 +1775,21 @@ function saveGame() {
         GAME_KEY,
         currentGame
     );
+}
+
+
+/*
+ * Debounced save — avoids a localStorage
+ * write on every keystroke.
+ */
+let _saveTimer;
+
+function saveGameDebounced() {
+
+    clearTimeout(_saveTimer);
+
+    _saveTimer =
+        setTimeout(saveGame, 300);
 }
 
 
@@ -2469,6 +2495,11 @@ function rebuildStickyBar() {
 }
 
 
+/*
+ * Re-rolls are only shown in Max Yatzy.
+ * This is the sole place that gates visibility —
+ * called after rebuildStickyBar() and setGame().
+ */
 function updateRerollVisibility() {
 
     for (
@@ -2500,69 +2531,35 @@ function updateRerollVisibility() {
    SCORE CALCULATION
    ========================================= */
 
-function getScore(
-    game,
-    category,
-    player
-) {
+/*
+ * Read all score inputs for one game into
+ * a flat map with a single querySelectorAll,
+ * instead of one querySelector per cell.
+ */
+function buildScoreMap(game) {
 
-    const input =
-        document.querySelector(
-            `.score[data-game="${game}"][data-cat="${category}"][data-player="${player}"]`
-        );
+    const map = {};
 
+    document
+        .querySelectorAll(
+            `.score[data-game="${game}"]`
+        )
+        .forEach(input => {
 
-    if (
-        !input ||
-        input.value === ""
-    ) {
+            const v = Number(input.value);
 
-        return 0;
-    }
-
-
-    const value =
-        Number(
-            input.value
-        );
-
-
-    if (
-        !Number.isFinite(value) ||
-        value < 0
-    ) {
-
-        return 0;
-    }
+            map[
+                input.dataset.cat +
+                "_" +
+                input.dataset.player
+            ] =
+                Number.isFinite(v) && v >= 0
+                    ? v
+                    : 0;
+        });
 
 
-    return value;
-}
-
-
-function getUpperTotal(
-    game,
-    player
-) {
-
-    return upperCategories.reduce(
-        (
-            sum,
-            category
-        ) => {
-
-            return (
-                sum +
-                getScore(
-                    game,
-                    category.key,
-                    player
-                )
-            );
-
-        },
-        0
-    );
+    return map;
 }
 
 
@@ -2571,6 +2568,10 @@ function getUpperTotal(
    ========================================= */
 
 function updateYatzy() {
+
+    const scores =
+        buildScoreMap("yatzy");
+
 
     const totals =
         Array(
@@ -2584,11 +2585,15 @@ function updateYatzy() {
         player++
     ) {
 
-        const upper =
-            getUpperTotal(
-                "yatzy",
-                player
-            );
+        let upper = 0;
+
+        upperCategories.forEach(cat => {
+
+            upper +=
+                scores[
+                    cat.key + "_" + player
+                ] || 0;
+        });
 
 
         const bonus =
@@ -2613,18 +2618,13 @@ function updateYatzy() {
             upper + bonus;
 
 
-        yatzyLowerCategories
-            .forEach(
-                category => {
+        yatzyLowerCategories.forEach(cat => {
 
-                    total +=
-                        getScore(
-                            "yatzy",
-                            category.key,
-                            player
-                        );
-                }
-            );
+            total +=
+                scores[
+                    cat.key + "_" + player
+                ] || 0;
+        });
 
 
         totals[
@@ -2658,6 +2658,10 @@ function updateYatzy() {
 
 function updateMax() {
 
+    const scores =
+        buildScoreMap("max");
+
+
     const totals =
         Array(
             players.length
@@ -2670,11 +2674,15 @@ function updateMax() {
         player++
     ) {
 
-        const upper =
-            getUpperTotal(
-                "max",
-                player
-            );
+        let upper = 0;
+
+        upperCategories.forEach(cat => {
+
+            upper +=
+                scores[
+                    cat.key + "_" + player
+                ] || 0;
+        });
 
 
         /*
@@ -2704,18 +2712,13 @@ function updateMax() {
             upper + bonus;
 
 
-        maxLowerCategories
-            .forEach(
-                category => {
+        maxLowerCategories.forEach(cat => {
 
-                    total +=
-                        getScore(
-                            "max",
-                            category.key,
-                            player
-                        );
-                }
-            );
+            total +=
+                scores[
+                    cat.key + "_" + player
+                ] || 0;
+        });
 
 
         totals[
@@ -2913,8 +2916,6 @@ function setGame(
     updateRerollVisibility();
 
     update();
-
-    saveGame();
 }
 
 
@@ -3026,6 +3027,13 @@ function confirmReset() {
    GENERAL UPDATE
    ========================================= */
 
+/*
+ * Called on every score change.
+ * Kept lean — re-roll display/visibility
+ * and player controls only change from
+ * explicit actions (game switch, add/remove
+ * player, changeRerolls), not from scores.
+ */
 function update() {
 
     if (
@@ -3044,9 +3052,7 @@ function update() {
 
     updateRerollVisibility();
 
-    updatePlayerControls();
-
-    saveGame();
+    saveGameDebounced();
 }
 
 
@@ -3123,6 +3129,16 @@ setGame(
 updatePlayerControls();
 
 updateRerollDisplay();
+
+
+/*
+ * Flush any pending debounced save
+ * before the tab is closed.
+ */
+window.addEventListener(
+    "beforeunload",
+    saveGame
+);
 
 </script>
 
