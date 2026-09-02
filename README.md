@@ -11,7 +11,7 @@ Games/
 │
 ├── README.md
 │
-├── Yatzy-pwa/
+├── Game1/
 │   ├── index.html
 │   ├── manifest.webmanifest
 │   ├── sw.js
@@ -19,7 +19,7 @@ Games/
 │       ├── icon-192.png
 │       └── icon-512.png
 │
-└── future-games/
+└── Game2/
     └── ...
 ```
 
@@ -29,7 +29,7 @@ Each game or project is kept in its own subfolder so that it can be developed, h
 
 ### Yatzy PWA
 
-**Location:** `Yatzy-pwa/`
+**Location:** `Yatzy/`
 
 ### TOW score card
 
