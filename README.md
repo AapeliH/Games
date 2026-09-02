@@ -42,32 +42,6 @@ A two-player Yatzy scorecard designed primarily for mobile devices.
 #### Max Yatzy
 - 6 dice
 - 75-point upper-section bonus threshold
-- One Pair
-- Two Pairs
-- Three Pairs
-- Three of a Kind
-- Four of a Kind
-- Five of a Kind
-- Small Straight
-- Large Straight
-- Full Straight
-- Full House
-- Four of a Kind + Pair
-- Two Three of a Kinds
-- Chance
-- Yatzy
-
-#### Features
-
-- 👥 Two players: **Marjo** and **Aapeli**
-- 🎲 Yatzy and Max Yatzy game modes
-- 🔢 Automatic score and total calculation
-- 🔄 Separate Max Yatzy re-roll counters for each player
-- 📱 Responsive mobile layout
-- 📌 Sticky totals and re-roll controls
-- 💾 Local browser storage
-- 📲 Progressive Web App support
-- 🌐 Offline functionality after the initial load
 
 ## 🌐 Web Games
 
@@ -126,20 +100,7 @@ Each project can contain its own HTML, CSS, JavaScript, images, icons, and PWA f
 ## 🎯 Goals
 
 The repository is primarily a playground for small web games and experiments.
-
-The main goals are:
-
-1. Keep projects simple and easy to understand.
-2. Make games usable on mobile devices.
-3. Avoid unnecessary dependencies.
-4. Allow games to work offline when practical.
-5. Keep each game independent and easy to deploy.
-
-## 📌 Status
-
-This repository is an evolving collection of small games.
-
-New games and improvements will be added over time.
+And learning to vibe code games.
 
 ## 📄 License
 
