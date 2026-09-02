@@ -282,6 +282,7 @@
 <script>
   const LEAGUE_ID = 1130463;
   const BATCH     = 8;
+  const PROXY     = 'https://corsproxy.io/?url=';
 
   const $status  = document.getElementById('status-text');
   const $bar     = document.getElementById('progress-bar');
@@ -297,7 +298,8 @@
   }
 
   async function apiFetch(path) {
-    const r = await fetch('https://fantasy.premierleague.com/api/' + path);
+    const url = PROXY + encodeURIComponent('https://fantasy.premierleague.com/api/' + path);
+    const r = await fetch(url);
     if (!r.ok) throw new Error(`HTTP ${r.status} — ${path}`);
     return r.json();
   }
