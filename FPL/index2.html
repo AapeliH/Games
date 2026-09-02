@@ -303,10 +303,9 @@
 <script>
 'use strict';
 
-const LEAGUE_ID   = 1130463;
-const CORS_PROXY  = 'https://corsproxy.io/?url=';
-const FPL_BASE    = 'https://fantasy.premierleague.com/api';
-const CAT_COLORS  = [
+const LEAGUE_ID  = 1130463;
+const FPL_BASE   = 'https://fantasy.premierleague.com/api';
+const CAT_COLORS = [
   '#00e87a','#22d3ee','#f472b6','#fbbf24',
   '#a78bfa','#fb923c','#34d399','#60a5fa',
   '#e879f9','#facc15'
@@ -318,9 +317,9 @@ let gwChart       = null;
 // ── Utilities ──────────────────────────────────────
 
 async function fetchFPL(path) {
-  const url    = `${FPL_BASE}${path}`;
-  const resp   = await fetch(`${CORS_PROXY}${encodeURIComponent(url)}`);
-  if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${path}`);
+  const url  = `https://proxy.cors.sh/${FPL_BASE}${path}`;
+  const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
   return resp.json();
 }
 
@@ -332,7 +331,7 @@ function loading(id, msg) {
 }
 function errState(id, msg, detail = '') {
   html(id, `<div class="state-msg">
-    <div class="error-icon">⚠[U+FE0F]</div>
+    <div class="error-icon">⚠️</div>
     <div>${msg}</div>
     ${detail ? `<div class="error-detail">${detail}</div>` : ''}
   </div>`);
