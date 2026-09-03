@@ -32,6 +32,8 @@ A Yatzy scorecard PWA supporting both standard Yatzy (5 dice) and Max Yatzy (6 d
 
 **Location:** [TOWSC/](TOWSC/)
 
+This is score card template for The Old World
+
 ## 📁 Repository Structure
 
 ```text
