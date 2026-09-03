@@ -11,6 +11,10 @@ Games/
 │
 ├── README.md
 │
+├── FPL/
+│   ├── index.html
+│   └── index2.html
+│
 ├── yatzy/
 │   ├── index.html
 │   ├── manifest.json
@@ -33,6 +37,12 @@ Games/
 Each game or project is kept in its own subfolder so that it can be developed, hosted, and maintained independently.
 
 ## 🎲 Games
+
+### FPL League Dashboard
+
+**Location:** `FPL/`
+
+A Fantasy Premier League dashboard for viewing league standings and results in the browser.
 
 ### Yatzy Scorecard
 
