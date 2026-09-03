@@ -1,0 +1,533 @@
+{
+  "army": "Chaos Space Marines",
+  "edition": "3rd",
+  "units": [
+    {
+      "id": "chaos-lord",
+      "name": "Chaos Lord",
+      "role": "HQ",
+      "pts": 80,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 5, "BS": 5, "S": 4, "T": 4, "W": 3, "I": 5, "A": 3, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolt Pistol",       "pts": 0,  "default": true  },
+        { "name": "Bolter",            "pts": 0,  "default": false },
+        { "name": "Power Weapon",      "pts": 15, "default": false },
+        { "name": "Power Fist",        "pts": 25, "default": false },
+        { "name": "Plasma Pistol",     "pts": 15, "default": false },
+        { "name": "Combi-bolter",      "pts": 10, "default": false },
+        { "name": "Daemon Weapon",     "pts": 25, "default": false },
+        { "name": "Mark of Khorne",    "pts": 10, "default": false },
+        { "name": "Mark of Nurgle",    "pts": 15, "default": false },
+        { "name": "Mark of Slaanesh",  "pts": 10, "default": false },
+        { "name": "Mark of Tzeentch",  "pts": 15, "default": false },
+        { "name": "Terminator Armour", "pts": 30, "default": false },
+        { "name": "Jump Pack",         "pts": 20, "default": false }
+      ]
+    },
+    {
+      "id": "chaos-sorcerer",
+      "name": "Chaos Sorcerer",
+      "role": "HQ",
+      "pts": 85,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 3, "I": 4, "A": 2, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolt Pistol",       "pts": 0,  "default": true  },
+        { "name": "Force Weapon",      "pts": 10, "default": true  },
+        { "name": "Plasma Pistol",     "pts": 15, "default": false },
+        { "name": "Mark of Tzeentch",  "pts": 15, "default": false },
+        { "name": "Mark of Slaanesh",  "pts": 10, "default": false },
+        { "name": "Mark of Nurgle",    "pts": 15, "default": false },
+        { "name": "Terminator Armour", "pts": 30, "default": false }
+      ]
+    },
+    {
+      "id": "daemon-prince",
+      "name": "Daemon Prince",
+      "role": "HQ",
+      "pts": 100,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 6, "BS": 5, "S": 6, "T": 5, "W": 4, "I": 5, "A": 4, "Ld": 10, "Sv": "—" },
+      "wargear": [
+        { "name": "Mark of Khorne",   "pts": 10, "default": false },
+        { "name": "Mark of Nurgle",   "pts": 20, "default": false },
+        { "name": "Mark of Slaanesh", "pts": 10, "default": false },
+        { "name": "Mark of Tzeentch", "pts": 15, "default": false }
+      ]
+    },
+    {
+      "id": "chaos-lieutenant",
+      "name": "Chaos Lieutenant",
+      "role": "HQ",
+      "pts": 55,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 5, "BS": 5, "S": 4, "T": 4, "W": 2, "I": 5, "A": 3, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolt Pistol",   "pts": 0,  "default": true  },
+        { "name": "Bolter",        "pts": 0,  "default": false },
+        { "name": "Power Weapon",  "pts": 15, "default": false },
+        { "name": "Power Fist",    "pts": 25, "default": false },
+        { "name": "Plasma Pistol", "pts": 15, "default": false }
+      ]
+    },
+    {
+      "id": "abaddon",
+      "name": "Abaddon the Despoiler",
+      "role": "HQ",
+      "pts": 300,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 7, "BS": 5, "S": 5, "T": 5, "W": 4, "I": 6, "A": 5, "Ld": 10, "Sv": "2+" },
+      "wargear": [
+        { "name": "Talon of Horus", "pts": 0, "default": true },
+        { "name": "Drach'nyen",     "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "kharn",
+      "name": "Khârn the Betrayer",
+      "role": "HQ",
+      "pts": 165,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 7, "BS": 5, "S": 5, "T": 4, "W": 2, "I": 5, "A": "*", "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Gorechild",     "pts": 0, "default": true },
+        { "name": "Plasma Pistol", "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "ahriman",
+      "name": "Ahriman",
+      "role": "HQ",
+      "pts": 250,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 3, "I": 4, "A": 2, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolt Pistol",  "pts": 0, "default": true },
+        { "name": "Force Weapon", "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "fabius-bile",
+      "name": "Fabius Bile",
+      "role": "HQ",
+      "pts": 150,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 3, "I": 4, "A": 3, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Chirurgeon",  "pts": 0, "default": true },
+        { "name": "Plague Sword","pts": 0, "default": true },
+        { "name": "Bolt Pistol", "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "typhus",
+      "name": "Typhus",
+      "role": "HQ",
+      "pts": 175,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 5, "BS": 5, "S": 4, "T": 5, "W": 3, "I": 4, "A": 3, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Manreaper",      "pts": 0, "default": true },
+        { "name": "Destroyer Hive", "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "lucius",
+      "name": "Lucius the Eternal",
+      "role": "HQ",
+      "pts": 150,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 6, "BS": 4, "S": 4, "T": 4, "W": 2, "I": 6, "A": 4, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Lash of Torment", "pts": 0, "default": true },
+        { "name": "Doom Siren",      "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "huron",
+      "name": "Huron Blackheart",
+      "role": "HQ",
+      "pts": 160,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 5, "BS": 5, "S": 4, "T": 4, "W": 3, "I": 5, "A": 3, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "The Tyrant's Claw", "pts": 0, "default": true },
+        { "name": "Bolter",            "pts": 0, "default": true }
+      ]
+    },
+
+    {
+      "id": "chaos-terminators",
+      "name": "Chaos Terminators",
+      "role": "Elites",
+      "pts": 120,
+      "addPts": 24,
+      "minSize": 5,
+      "maxSize": 10,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 2, "Ld": 10, "Sv": "2+" },
+      "wargear": [
+        { "name": "Combi-bolter",      "pts": 0,  "default": true  },
+        { "name": "Power Weapon",      "pts": 0,  "default": true  },
+        { "name": "Power Fist",        "pts": 5,  "default": false },
+        { "name": "Reaper Autocannon", "pts": 10, "default": false },
+        { "name": "Heavy Flamer",      "pts": 10, "default": false },
+        { "name": "Combi-melta",       "pts": 10, "default": false },
+        { "name": "Combi-plasma",      "pts": 10, "default": false },
+        { "name": "Mark of Khorne",    "pts": 10, "default": false },
+        { "name": "Mark of Nurgle",    "pts": 15, "default": false },
+        { "name": "Mark of Slaanesh",  "pts": 10, "default": false },
+        { "name": "Mark of Tzeentch",  "pts": 15, "default": false }
+      ]
+    },
+    {
+      "id": "possessed",
+      "name": "Possessed Marines",
+      "role": "Elites",
+      "pts": 120,
+      "addPts": 22,
+      "minSize": 5,
+      "maxSize": 10,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 2, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolt Pistol",         "pts": 0, "default": true },
+        { "name": "Daemonic Possession", "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "chosen",
+      "name": "Chosen",
+      "role": "Elites",
+      "pts": 105,
+      "addPts": 18,
+      "minSize": 5,
+      "maxSize": 10,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 2, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolter",        "pts": 0,  "default": true  },
+        { "name": "Bolt Pistol",   "pts": 0,  "default": true  },
+        { "name": "Power Weapon",  "pts": 15, "default": false },
+        { "name": "Power Fist",    "pts": 25, "default": false },
+        { "name": "Plasma Gun",    "pts": 10, "default": false },
+        { "name": "Meltagun",      "pts": 10, "default": false },
+        { "name": "Flamer",        "pts": 6,  "default": false },
+        { "name": "Heavy Bolter",  "pts": 10, "default": false },
+        { "name": "Lascannon",     "pts": 20, "default": false }
+      ]
+    },
+    {
+      "id": "chaos-dreadnought",
+      "name": "Chaos Dreadnought",
+      "role": "Elites",
+      "pts": 105,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 4, "BS": 4, "S": 6, "T": 10, "W": 4, "I": 4, "A": 3, "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Dreadnought CCW",        "pts": 0,  "default": true  },
+        { "name": "Storm Bolter",           "pts": 0,  "default": true  },
+        { "name": "Lascannon",              "pts": 20, "default": false },
+        { "name": "Missile Launcher",       "pts": 15, "default": false },
+        { "name": "Plasma Cannon",          "pts": 25, "default": false },
+        { "name": "Twin-linked Autocannon", "pts": 20, "default": false },
+        { "name": "Heavy Flamer",           "pts": 5,  "default": false }
+      ]
+    },
+    {
+      "id": "greater-daemon",
+      "name": "Greater Daemon",
+      "role": "Elites",
+      "pts": 100,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 7, "BS": 0, "S": 6, "T": 5, "W": 4, "I": 5, "A": 4, "Ld": 10, "Sv": "—" },
+      "wargear": []
+    },
+
+    {
+      "id": "csm-squad",
+      "name": "Chaos Space Marines",
+      "role": "Troops",
+      "pts": 90,
+      "addPts": 18,
+      "minSize": 5,
+      "maxSize": 20,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 1, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolter",              "pts": 0,  "default": true  },
+        { "name": "Bolt Pistol",         "pts": 0,  "default": true  },
+        { "name": "Plasma Gun",          "pts": 10, "default": false },
+        { "name": "Meltagun",            "pts": 10, "default": false },
+        { "name": "Flamer",              "pts": 6,  "default": false },
+        { "name": "Heavy Bolter",        "pts": 10, "default": false },
+        { "name": "Lascannon",           "pts": 20, "default": false },
+        { "name": "Missile Launcher",    "pts": 15, "default": false },
+        { "name": "Plasma Cannon",       "pts": 25, "default": false },
+        { "name": "Power Weapon",        "pts": 15, "default": false },
+        { "name": "Power Fist",          "pts": 25, "default": false },
+        { "name": "Aspiring Champion",   "pts": 10, "default": false },
+        { "name": "Mark of Khorne",      "pts": 10, "default": false },
+        { "name": "Mark of Nurgle",      "pts": 15, "default": false },
+        { "name": "Mark of Slaanesh",    "pts": 10, "default": false },
+        { "name": "Mark of Tzeentch",    "pts": 15, "default": false },
+        { "name": "Icon of Chaos Glory", "pts": 10, "default": false },
+        { "name": "Rhino Transport",     "pts": 50, "default": false }
+      ]
+    },
+    {
+      "id": "berzerkers",
+      "name": "Khorne Berzerkers",
+      "role": "Troops",
+      "pts": 110,
+      "addPts": 22,
+      "minSize": 5,
+      "maxSize": 16,
+      "stats": { "WS": 5, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 2, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolt Pistol",    "pts": 0,  "default": true  },
+        { "name": "Chainaxe",       "pts": 0,  "default": true  },
+        { "name": "Plasma Pistol",  "pts": 15, "default": false },
+        { "name": "Power Fist",     "pts": 25, "default": false },
+        { "name": "Skull Champion", "pts": 10, "default": false },
+        { "name": "Icon of Khorne", "pts": 10, "default": false },
+        { "name": "Rhino Transport","pts": 50, "default": false }
+      ]
+    },
+    {
+      "id": "plague-marines",
+      "name": "Plague Marines",
+      "role": "Troops",
+      "pts": 115,
+      "addPts": 23,
+      "minSize": 5,
+      "maxSize": 14,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": "4(5)", "W": 1, "I": 3, "A": 1, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolter",          "pts": 0,  "default": true  },
+        { "name": "Bolt Pistol",     "pts": 0,  "default": true  },
+        { "name": "Plasma Gun",      "pts": 10, "default": false },
+        { "name": "Meltagun",        "pts": 10, "default": false },
+        { "name": "Flamer",          "pts": 6,  "default": false },
+        { "name": "Power Fist",      "pts": 25, "default": false },
+        { "name": "Plague Champion", "pts": 10, "default": false },
+        { "name": "Icon of Nurgle",  "pts": 10, "default": false },
+        { "name": "Rhino Transport", "pts": 50, "default": false }
+      ]
+    },
+    {
+      "id": "noise-marines",
+      "name": "Noise Marines",
+      "role": "Troops",
+      "pts": 110,
+      "addPts": 20,
+      "minSize": 5,
+      "maxSize": 15,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 1, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolter",           "pts": 0,  "default": true  },
+        { "name": "Bolt Pistol",      "pts": 0,  "default": true  },
+        { "name": "Sonic Blaster",    "pts": 10, "default": false },
+        { "name": "Blastmaster",      "pts": 35, "default": false },
+        { "name": "Doom Siren",       "pts": 15, "default": false },
+        { "name": "Power Weapon",     "pts": 15, "default": false },
+        { "name": "Noise Champion",   "pts": 10, "default": false },
+        { "name": "Icon of Slaanesh", "pts": 10, "default": false },
+        { "name": "Rhino Transport",  "pts": 50, "default": false }
+      ]
+    },
+    {
+      "id": "thousand-sons",
+      "name": "Thousand Sons",
+      "role": "Troops",
+      "pts": 120,
+      "addPts": 24,
+      "minSize": 5,
+      "maxSize": 15,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 1, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolter",            "pts": 0,  "default": true  },
+        { "name": "Bolt Pistol",       "pts": 0,  "default": true  },
+        { "name": "Inferno Bolts",     "pts": 0,  "default": true  },
+        { "name": "Plasma Gun",        "pts": 10, "default": false },
+        { "name": "Aspiring Sorcerer", "pts": 15, "default": false },
+        { "name": "Icon of Tzeentch",  "pts": 10, "default": false },
+        { "name": "Rhino Transport",   "pts": 50, "default": false }
+      ]
+    },
+
+    {
+      "id": "chaos-bikers",
+      "name": "Chaos Bikers",
+      "role": "Fast Attack",
+      "pts": 75,
+      "addPts": 25,
+      "minSize": 3,
+      "maxSize": 8,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": "4(5)", "W": 1, "I": 4, "A": 1, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolt Pistol",    "pts": 0,  "default": true  },
+        { "name": "Bolter",         "pts": 0,  "default": true  },
+        { "name": "Plasma Gun",     "pts": 10, "default": false },
+        { "name": "Meltagun",       "pts": 10, "default": false },
+        { "name": "Flamer",         "pts": 6,  "default": false },
+        { "name": "Power Weapon",   "pts": 15, "default": false },
+        { "name": "Power Fist",     "pts": 25, "default": false },
+        { "name": "Mark of Khorne", "pts": 10, "default": false },
+        { "name": "Mark of Nurgle", "pts": 15, "default": false }
+      ]
+    },
+    {
+      "id": "raptors",
+      "name": "Raptors",
+      "role": "Fast Attack",
+      "pts": 100,
+      "addPts": 18,
+      "minSize": 5,
+      "maxSize": 15,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 1, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolt Pistol",       "pts": 0,  "default": true  },
+        { "name": "Bolter",            "pts": 0,  "default": true  },
+        { "name": "Jump Pack",         "pts": 0,  "default": true  },
+        { "name": "Plasma Pistol",     "pts": 15, "default": false },
+        { "name": "Power Weapon",      "pts": 15, "default": false },
+        { "name": "Power Fist",        "pts": 25, "default": false },
+        { "name": "Meltagun",          "pts": 10, "default": false },
+        { "name": "Flamer",            "pts": 6,  "default": false },
+        { "name": "Aspiring Champion", "pts": 10, "default": false }
+      ]
+    },
+    {
+      "id": "chaos-spawn",
+      "name": "Chaos Spawn",
+      "role": "Fast Attack",
+      "pts": 45,
+      "addPts": 45,
+      "minSize": 1,
+      "maxSize": 5,
+      "stats": { "WS": 3, "BS": 0, "S": 4, "T": 4, "W": 2, "I": 3, "A": "D6", "Ld": 10, "Sv": "—" },
+      "wargear": []
+    },
+
+    {
+      "id": "havocs",
+      "name": "Havocs",
+      "role": "Heavy Support",
+      "pts": 90,
+      "addPts": 18,
+      "minSize": 5,
+      "maxSize": 10,
+      "stats": { "WS": 4, "BS": 4, "S": 4, "T": 4, "W": 1, "I": 4, "A": 1, "Ld": 9, "Sv": "3+" },
+      "wargear": [
+        { "name": "Bolter",            "pts": 0,  "default": true  },
+        { "name": "Bolt Pistol",       "pts": 0,  "default": true  },
+        { "name": "Heavy Bolter",      "pts": 10, "default": false },
+        { "name": "Lascannon",         "pts": 20, "default": false },
+        { "name": "Missile Launcher",  "pts": 15, "default": false },
+        { "name": "Plasma Cannon",     "pts": 25, "default": false },
+        { "name": "Autocannon",        "pts": 10, "default": false },
+        { "name": "Aspiring Champion", "pts": 10, "default": false },
+        { "name": "Rhino Transport",   "pts": 50, "default": false }
+      ]
+    },
+    {
+      "id": "obliterators",
+      "name": "Obliterators",
+      "role": "Heavy Support",
+      "pts": 70,
+      "addPts": 70,
+      "minSize": 1,
+      "maxSize": 3,
+      "stats": { "WS": 4, "BS": 4, "S": 5, "T": 5, "W": 2, "I": 3, "A": 2, "Ld": 9, "Sv": "2+" },
+      "wargear": [
+        { "name": "Fused Weapons", "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "predator",
+      "name": "Predator",
+      "role": "Heavy Support",
+      "pts": 85,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": "—", "BS": 4, "S": "—", "T": "—", "W": "—", "I": "—", "A": "—", "Ld": "—", "Sv": "3+" },
+      "wargear": [
+        { "name": "Autocannon (Turret)",   "pts": 0,  "default": true  },
+        { "name": "Lascannon (Turret)",    "pts": 35, "default": false },
+        { "name": "Heavy Bolter Sponsons", "pts": 20, "default": false },
+        { "name": "Lascannon Sponsons",    "pts": 40, "default": false }
+      ]
+    },
+    {
+      "id": "defiler",
+      "name": "Defiler",
+      "role": "Heavy Support",
+      "pts": 150,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": 3, "BS": 3, "S": "—", "T": 12, "W": "—", "I": "—", "A": "D6+1", "Ld": 10, "Sv": "3+" },
+      "wargear": [
+        { "name": "Battle Cannon",     "pts": 0, "default": true },
+        { "name": "Reaper Autocannon", "pts": 0, "default": true },
+        { "name": "Havoc Launcher",    "pts": 0, "default": true },
+        { "name": "Heavy Flamer",      "pts": 0, "default": true }
+      ]
+    },
+    {
+      "id": "vindicator",
+      "name": "Vindicator",
+      "role": "Heavy Support",
+      "pts": 115,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": "—", "BS": 4, "S": "—", "T": "—", "W": "—", "I": "—", "A": "—", "Ld": "—", "Sv": "3+" },
+      "wargear": [
+        { "name": "Demolisher Cannon", "pts": 0,  "default": true  },
+        { "name": "Storm Bolter",      "pts": 10, "default": false }
+      ]
+    },
+    {
+      "id": "land-raider",
+      "name": "Land Raider",
+      "role": "Heavy Support",
+      "pts": 250,
+      "addPts": 0,
+      "minSize": 1,
+      "maxSize": 1,
+      "stats": { "WS": "—", "BS": 4, "S": "—", "T": "—", "W": "—", "I": "—", "A": "—", "Ld": "—", "Sv": "2+" },
+      "wargear": [
+        { "name": "Twin-linked Lascannon",   "pts": 0,  "default": true  },
+        { "name": "Twin-linked Heavy Bolter","pts": 0,  "default": true  },
+        { "name": "Havoc Launcher",          "pts": 10, "default": false },
+        { "name": "Daemonic Possession",     "pts": 20, "default": false }
+      ]
+    }
+  ]
+}
