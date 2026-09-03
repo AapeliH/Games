@@ -24,10 +24,6 @@ A Warhammer 40,000 army creator tool for building Chaos Space Marines lists.
 
 A Yatzy scorecard PWA supporting both standard Yatzy (5 dice) and Max Yatzy (6 dice), with up to 4 players, re-roll tracking, and offline support.
 
-### Yatzy PWA (legacy)
-
-**Location:** [yatzy-pwa/](yatzy-pwa/)
-
 ### TOW Score Card
 
 **Location:** [TOWSC/](TOWSC/)
@@ -55,15 +51,7 @@ Games/
 │   ├── sw.js
 │   └── images/
 │       └── icon.svg
-│
-├── yatzy-pwa/
-│   ├── index.html
-│   ├── manifest.webmanifest
-│   ├── sw.js
-│   └── icons/
-│       ├── icon-192.png
-│       └── icon-512.png
-│
+
 └── TOWSC/
     └── index.html
 ```
