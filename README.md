@@ -4,6 +4,34 @@ A collection of small, lightweight web games and game-related projects.
 
 The repository is intended as a home for simple games that can be played in a web browser, with an emphasis on mobile-friendly interfaces, minimal dependencies, and easy access.
 
+## 🎲 Games
+
+### FPL League Dashboard
+
+**Location:** [FPL/](FPL/)
+
+A Fantasy Premier League dashboard for viewing league standings and results in the browser.
+
+### Chaos Space Marines — Army Creator
+
+**Location:** [40k3rd/](40k3rd/)
+
+A Warhammer 40,000 army creator tool for building Chaos Space Marines lists.
+
+### Yatzy Scorecard
+
+**Location:** [yatzy/](yatzy/)
+
+A Yatzy scorecard PWA supporting both standard Yatzy (5 dice) and Max Yatzy (6 dice), with up to 4 players, re-roll tracking, and offline support.
+
+### Yatzy PWA (legacy)
+
+**Location:** [yatzy-pwa/](yatzy-pwa/)
+
+### TOW Score Card
+
+**Location:** [TOWSC/](TOWSC/)
+
 ## 📁 Repository Structure
 
 ```text
@@ -14,6 +42,10 @@ Games/
 ├── FPL/
 │   ├── index.html
 │   └── index2.html
+│
+├── 40k3rd/
+│   ├── index.html
+│   └── csm_data.json
 │
 ├── yatzy/
 │   ├── index.html
@@ -35,28 +67,6 @@ Games/
 ```
 
 Each game or project is kept in its own subfolder so that it can be developed, hosted, and maintained independently.
-
-## 🎲 Games
-
-### FPL League Dashboard
-
-**Location:** `FPL/`
-
-A Fantasy Premier League dashboard for viewing league standings and results in the browser.
-
-### Yatzy Scorecard
-
-**Location:** `yatzy/`
-
-A Yatzy scorecard PWA supporting both standard Yatzy (5 dice) and Max Yatzy (6 dice), with up to 4 players, re-roll tracking, and offline support.
-
-### Yatzy PWA (legacy)
-
-**Location:** `yatzy-pwa/`
-
-### TOW Score Card
-
-**Location:** `TOWSC/`
 
 ## 🌐 Web Games
 
