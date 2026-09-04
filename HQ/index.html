@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HeroQuest Character Sheets</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #2a1a0a;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1a0a00;
+  }
+
+  h1 {
+    text-align: center;
+    color: #f0d080;
+    font-size: 2.2rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 1.2rem 0 0.3rem;
+    text-shadow: 0 2px 8px #000;
+    font-family: Georgia, serif;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #c0a050;
+    margin-bottom: 1rem;
+    font-style: italic;
+    font-size: 1rem;
+  }
+
+  .print-btn {
+    display: block;
+    margin: 0 auto 1.5rem;
+    padding: 0.5rem 2rem;
+    background: #8b4513;
+    color: #f0d080;
+    border: 2px solid #f0d080;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: Georgia, serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .print-btn:hover { background: #a0522d; }
+
+  .sheets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 0 2rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── CARD ── */
+  .sheet {
+    background: #f5e8c8;
+    border: 3px solid #5a3010;
+    box-shadow: 4px 4px 0 #2a1a0a, inset 0 0 40px rgba(90,48,16,0.15);
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ── HEADER ── */
+  .sheet-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid #5a3010;
+  }
+
+  .hero-portrait {
+    width: 100%;
+    border-right: 2px solid #5a3010;
+    background: #fff8e8;
+    min-height: 220px;
+  }
+
+  .hero-info {
+    padding: 0.6rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .class-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #5a1a00;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .field-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .field-label {
+    font-style: italic;
+    color: #7a4a20;
+    white-space: nowrap;
+  }
+
+  .field-line {
+    flex: 1;
+    border-bottom: 1px solid #5a3010;
+    min-width: 60px;
+    height: 1.1rem;
+  }
+
+  /* ── COMPACT STATS (inside header) ── */
+  .stats-inline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid #c0a060;
+    margin-top: 0.2rem;
+    padding-top: 0.25rem;
+  }
+
+  .stat-mini {
+    text-align: center;
+    padding: 0.15rem 0.1rem;
+    border-right: 1px solid #c0a060;
+  }
+
+  .stat-mini:last-child { border-right: none; }
+
+  .stat-mini .stat-label {
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #7a4a20;
+    font-style: italic;
+    display: block;
+  }
+
+  .stat-mini .stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #3a0a00;
+    line-height: 1.1;
+    display: block;
+  }
+
+  .stat-mini .stat-dice {
+    font-size: 0.55rem;
+    color: #8a5a30;
+    display: block;
+  }
+
+  /* ── TRACKERS ── */
+  .tracker-section {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 2px solid #5a3010;
+  }
+
+  .tracker-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #7a4a20;
+    margin-bottom: 0.35rem;
+    font-style: italic;
+    text-align: center;
+  }
+
+  .squares {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 20px);
+    grid-template-rows: repeat(2, 20px);
+    gap: 3px;
+    overflow: hidden;
+    max-height: 43px;
+    justify-content: center;
+  }
+
+  .sq {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid #5a3010;
+    background: #fff8e8;
+  }
+
+  /* ── QUESTS ── */
+  .quests-section {
+    padding: 0.4rem 0.8rem;
+    border-bottom: 2px solid #5a3010;
+  }
+
+  .quest-numbers {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+    justify-content: center;
+  }
+
+  .quest-box {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #5a3010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    background: #fff8e8;
+    font-weight: 600;
+  }
+
+  /* ── TWO-COLUMN LOWER ── */
+  .lower-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid #5a3010;
+  }
+
+  .lower-col { padding: 0.5rem 0.8rem; }
+  .lower-col:first-child { border-right: 1px solid #5a3010; }
+
+  .section-title {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #7a4a20;
+    font-style: italic;
+    margin-bottom: 0.3rem;
+    border-bottom: 1px solid #c0a060;
+    padding-bottom: 0.15rem;
+  }
+
+  .item-line {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.2rem;
+    font-size: 0.78rem;
+  }
+
+  .item-bullet {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #5a3010;
+    flex-shrink: 0;
+    background: #fff8e8;
+  }
+
+  .item-text { color: #2a1a0a; }
+
+  .item-blank {
+    flex: 1;
+    border-bottom: 1px dotted #a08050;
+    height: 0.9rem;
+  }
+
+  .gold-input {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .gold-value {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #c07000;
+    width: 3rem;
+    text-align: center;
+  }
+
+  /* ── NOTES ── */
+  .notes-section {
+    padding: 0.5rem 0.8rem;
+    min-height: 50px;
+  }
+
+  .notes-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 0.3rem;
+  }
+
+  .notes-line { border-bottom: 1px solid #b09060; height: 1rem; }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: white; }
+    h1, .subtitle, .print-btn { display: none; }
+    .sheets-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6cm;
+      padding: 0;
+      max-width: none;
+    }
+    .sheet { box-shadow: none; border: 2px solid #5a3010; }
+  }
+
+  @page { margin: 1cm; size: A4 landscape; }
+</style>
+</head>
+<body>
+
+<h1>HeroQuest</h1>
+<p class="subtitle">Character Sheets — North American / European Edition</p>
+<button class="print-btn" onclick="window.print()">Print All Sheets</button>
+
+<div class="sheets-grid">
+
+  <!-- ══════════════ BARBARIAN ══════════════ -->
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="hero-portrait"></div>
+      <div class="hero-info">
+        <div class="class-title">Barbarian</div>
+        <div class="field-row"><span class="field-label">Name:</span><div class="field-line"></div></div>
+        <div class="stats-inline">
+          <div class="stat-mini">
+            <span class="stat-label">Attack</span>
+            <span class="stat-value">3</span>
+            <span class="stat-dice">combat dice</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Defend</span>
+            <span class="stat-value">2</span>
+            <span class="stat-dice">combat dice</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Body</span>
+            <span class="stat-value">8</span>
+            <span class="stat-dice">starting</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Mind</span>
+            <span class="stat-value">2</span>
+            <span class="stat-dice">starting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-label">Body Points</div>
+      <div class="squares">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-label">Mind Points</div>
+      <div class="squares">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+      </div>
+    </div>
+
+    <div class="quests-section">
+      <div class="tracker-label">Quests Completed</div>
+      <div class="quest-numbers">
+        <div class="quest-box">1</div><div class="quest-box">2</div><div class="quest-box">3</div>
+        <div class="quest-box">4</div><div class="quest-box">5</div><div class="quest-box">6</div>
+        <div class="quest-box">7</div><div class="quest-box">8</div><div class="quest-box">9</div>
+        <div class="quest-box">10</div><div class="quest-box">11</div><div class="quest-box">12</div>
+        <div class="quest-box">13</div><div class="quest-box">14</div>
+      </div>
+    </div>
+
+    <div class="lower-grid">
+      <div class="lower-col">
+        <div class="section-title">Gold Coins</div>
+        <div class="gold-input"><span class="gold-value"></span><span style="font-size:0.8rem;color:#7a4a20"></br></br></span></div>
+        <div class="item-line"><div class="item-blank"></div></div>
+        <div class="section-title" style="margin-top:0.5rem">Other Items</div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+      </div>
+      <div class="lower-col">
+        <div class="section-title">Weapons</div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Short Sword</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Broadsword</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Battle Axe</span></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="section-title" style="margin-top:0.5rem">Armour</div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Chain Mail</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Plate Mail</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Shield</span></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <div class="section-title">Notes / Spells</div>
+      <div class="notes-lines">
+        <div class="notes-line"></div><div class="notes-line"></div><div class="notes-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ DWARF ══════════════ -->
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="hero-portrait"></div>
+      <div class="hero-info">
+        <div class="class-title">Dwarf</div>
+        <div class="field-row"><span class="field-label">Name:</span><div class="field-line"></div></div>
+        <div class="stats-inline">
+          <div class="stat-mini">
+            <span class="stat-label">Attack</span>
+            <span class="stat-value">2</span>
+            <span class="stat-dice">combat dice</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Defend</span>
+            <span class="stat-value">2</span>
+            <span class="stat-dice">combat dice</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Body</span>
+            <span class="stat-value">7</span>
+            <span class="stat-dice">starting</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Mind</span>
+            <span class="stat-value">3</span>
+            <span class="stat-dice">starting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-label">Body Points</div>
+      <div class="squares">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-label">Mind Points</div>
+      <div class="squares">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+      </div>
+    </div>
+
+    <div class="quests-section">
+      <div class="tracker-label">Quests Completed</div>
+      <div class="quest-numbers">
+        <div class="quest-box">1</div><div class="quest-box">2</div><div class="quest-box">3</div>
+        <div class="quest-box">4</div><div class="quest-box">5</div><div class="quest-box">6</div>
+        <div class="quest-box">7</div><div class="quest-box">8</div><div class="quest-box">9</div>
+        <div class="quest-box">10</div><div class="quest-box">11</div><div class="quest-box">12</div>
+        <div class="quest-box">13</div><div class="quest-box">14</div>
+      </div>
+    </div>
+
+    <div class="lower-grid">
+      <div class="lower-col">
+        <div class="section-title">Gold Coins</div>
+        <div class="gold-input"><span class="gold-value"></span><span style="font-size:0.8rem;color:#7a4a20"></br></br></span></div>
+        <div class="item-line"><div class="item-blank"></div></div>
+        <div class="section-title" style="margin-top:0.5rem">Other Items</div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+      </div>
+      <div class="lower-col">
+        <div class="section-title">Weapons</div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Short Sword</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Crossbow</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Battle Axe</span></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="section-title" style="margin-top:0.5rem">Armour</div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Chain Mail</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Plate Mail</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Shield</span></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <div class="section-title">Special Abilities / Notes</div>
+      <div class="notes-lines">
+        <div class="notes-line"></div><div class="notes-line"></div><div class="notes-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ ELF ══════════════ -->
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="hero-portrait"></div>
+      <div class="hero-info">
+        <div class="class-title">Elf</div>
+        <div class="field-row"><span class="field-label">Name:</span><div class="field-line"></div></div>
+        <div class="stats-inline">
+          <div class="stat-mini">
+            <span class="stat-label">Attack</span>
+            <span class="stat-value">2</span>
+            <span class="stat-dice">combat dice</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Defend</span>
+            <span class="stat-value">2</span>
+            <span class="stat-dice">combat dice</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Body</span>
+            <span class="stat-value">6</span>
+            <span class="stat-dice">starting</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Mind</span>
+            <span class="stat-value">4</span>
+            <span class="stat-dice">starting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-label">Body Points</div>
+      <div class="squares">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-label">Mind Points</div>
+      <div class="squares">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+      </div>
+    </div>
+
+    <div class="quests-section">
+      <div class="tracker-label">Quests Completed</div>
+      <div class="quest-numbers">
+        <div class="quest-box">1</div><div class="quest-box">2</div><div class="quest-box">3</div>
+        <div class="quest-box">4</div><div class="quest-box">5</div><div class="quest-box">6</div>
+        <div class="quest-box">7</div><div class="quest-box">8</div><div class="quest-box">9</div>
+        <div class="quest-box">10</div><div class="quest-box">11</div><div class="quest-box">12</div>
+        <div class="quest-box">13</div><div class="quest-box">14</div>
+      </div>
+    </div>
+
+    <div class="lower-grid">
+      <div class="lower-col">
+        <div class="section-title">Gold Coins</div>
+        <div class="gold-input"><span class="gold-value"></span><span style="font-size:0.8rem;color:#7a4a20"></br></br></span></div>
+        <div class="item-line"><div class="item-blank"></div></div>
+        <div class="section-title" style="margin-top:0.5rem">Other Items</div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+      </div>
+      <div class="lower-col">
+        <div class="section-title">Weapons</div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Short Sword</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Elven Blade</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Crossbow</span></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="section-title" style="margin-top:0.5rem">Armour</div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Chain Mail</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Shield</span></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <div class="section-title">Spells / Notes</div>
+      <div class="notes-lines">
+        <div class="notes-line"></div><div class="notes-line"></div><div class="notes-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ WIZARD ══════════════ -->
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="hero-portrait"></div>
+      <div class="hero-info">
+        <div class="class-title">Wizard</div>
+        <div class="field-row"><span class="field-label">Name:</span><div class="field-line"></div></div>
+        <div class="stats-inline">
+          <div class="stat-mini">
+            <span class="stat-label">Attack</span>
+            <span class="stat-value">1</span>
+            <span class="stat-dice">combat dice</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Defend</span>
+            <span class="stat-value">2</span>
+            <span class="stat-dice">combat dice</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Body</span>
+            <span class="stat-value">4</span>
+            <span class="stat-dice">starting</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-label">Mind</span>
+            <span class="stat-value">6</span>
+            <span class="stat-dice">starting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-label">Body Points</div>
+      <div class="squares">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-label">Mind Points</div>
+      <div class="squares">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div>
+      </div>
+    </div>
+
+    <div class="quests-section">
+      <div class="tracker-label">Quests Completed</div>
+      <div class="quest-numbers">
+        <div class="quest-box">1</div><div class="quest-box">2</div><div class="quest-box">3</div>
+        <div class="quest-box">4</div><div class="quest-box">5</div><div class="quest-box">6</div>
+        <div class="quest-box">7</div><div class="quest-box">8</div><div class="quest-box">9</div>
+        <div class="quest-box">10</div><div class="quest-box">11</div><div class="quest-box">12</div>
+        <div class="quest-box">13</div><div class="quest-box">14</div>
+      </div>
+    </div>
+
+    <div class="lower-grid">
+      <div class="lower-col">
+        <div class="section-title">Gold Coins</div>
+        <div class="gold-input"><span class="gold-value"></span><span style="font-size:0.8rem;color:#7a4a20"></br></br></span></div>
+        <div class="item-line"><div class="item-blank"></div></div>
+        <div class="section-title" style="margin-top:0.5rem">Other Items</div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+      </div>
+      <div class="lower-col">
+        <div class="section-title">Weapons</div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Dagger</span></div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">Staff</span></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="section-title" style="margin-top:0.5rem">Armour</div>
+        <div class="item-line"><div class="item-bullet"></div><span class="item-text">— (no armour allowed)</span></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+        <div class="item-line"><div class="item-bullet"></div><div class="item-blank"></div></div>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <div class="section-title">Spells Known</div>
+      <div class="notes-lines">
+        <div class="notes-line"></div><div class="notes-line"></div><div class="notes-line"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
