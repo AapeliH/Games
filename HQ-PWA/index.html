@@ -194,6 +194,9 @@
     }
 
     .stat:last-child { border-right: none; }
+    [data-reset] { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    [data-reset]:hover .stat-val { opacity: 0.7; }
+    [data-reset]:active { opacity: 0.6; }
 
     .stat-lbl {
       display: block;
@@ -216,6 +219,30 @@
       display: block;
       font-size: 0.5rem;
       color: var(--faint);
+    }
+
+    /* ── MOVE ROW ── */
+    .move-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      border-top: 1px solid var(--bdr);
+      padding: 0.2rem 0;
+    }
+
+    .move-lbl {
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .move-val {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #3a0a00;
     }
 
     /* ── TRACKERS ── */
@@ -457,8 +484,9 @@ const HEROES = {
 const MAX_PTS = 12;
 
 /* ── STATE ────────────────────────────────────────────── */
-function freshState() {
-  return { name: '', body: MAX_PTS, mind: MAX_PTS, weapon: null, armour: [], gold: '', items: ['','','','',''], portrait: null };
+function freshState(heroId) {
+  const h = HEROES[heroId];
+  return { name: '', body: h.baseBody, mind: h.baseMind, weapon: null, armour: [], gold: '', items: ['','','','',''], portrait: null };
 }
 
 let active = 'barbarian';
@@ -467,9 +495,12 @@ let state  = {};
 (function load() {
   try { state = JSON.parse(localStorage.getItem('hq-state') || '{}'); } catch(_) {}
   for (const id of Object.keys(HEROES)) {
-    if (!state[id]) state[id] = freshState();
-    state[id].body = Math.min(Math.max(+state[id].body ?? MAX_PTS, 0), MAX_PTS);
-    state[id].mind = Math.min(Math.max(+state[id].mind ?? MAX_PTS, 0), MAX_PTS);
+    const h = HEROES[id];
+    if (!state[id]) state[id] = freshState(id);
+    const storedBody = state[id].body !== undefined ? +state[id].body : h.baseBody;
+    const storedMind = state[id].mind !== undefined ? +state[id].mind : h.baseMind;
+    state[id].body = Math.min(Math.max(storedBody, 0), MAX_PTS);
+    state[id].mind = Math.min(Math.max(storedMind, 0), MAX_PTS);
     if (!Array.isArray(state[id].armour))  state[id].armour  = [];
     if (!Array.isArray(state[id].items))   state[id].items   = ['','','','',''];
     if (state[id].portrait === undefined)  state[id].portrait = null;
@@ -549,6 +580,10 @@ function render() {
           <label for="inp-name">Name:</label>
           <input id="inp-name" class="name-input" type="text" value="${e(s.name)}" placeholder="…">
         </div>
+        <div class="move-row">
+          <span class="move-lbl">Move</span>
+          <span class="move-val">2D6</span>
+        </div>
         <div class="stats-row">
           <div class="stat">
             <span class="stat-lbl">Attack</span>
@@ -560,15 +595,15 @@ function render() {
             <span class="stat-val" id="sv-def">${getDef(active)}</span>
             <span class="stat-sub">dice</span>
           </div>
-          <div class="stat">
+          <div class="stat" data-reset="body" title="Tap to reset body points">
             <span class="stat-lbl">Body</span>
             <span class="stat-val" style="color:var(--green)">${h.baseBody}</span>
-            <span class="stat-sub">base</span>
+            <span class="stat-sub">↺ reset</span>
           </div>
-          <div class="stat">
+          <div class="stat" data-reset="mind" title="Tap to reset mind points">
             <span class="stat-lbl">Mind</span>
             <span class="stat-val" style="color:var(--purple)">${h.baseMind}</span>
-            <span class="stat-sub">base</span>
+            <span class="stat-sub">↺ reset</span>
           </div>
         </div>
       </div>
@@ -682,6 +717,16 @@ function wire() {
       if (ev.target.checked) { if (!s.armour.includes(id)) s.armour.push(id); }
       else s.armour = s.armour.filter(a => a !== id);
       document.getElementById('sv-def').textContent = getDef(active);
+      save();
+    })
+  );
+
+  // Body/Mind reset on stat click
+  document.querySelectorAll('[data-reset]').forEach(el =>
+    el.addEventListener('click', () => {
+      const type = el.dataset.reset;
+      s[type] = type === 'body' ? HEROES[active].baseBody : HEROES[active].baseMind;
+      updateTracker(type, s[type]);
       save();
     })
   );
