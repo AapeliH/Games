@@ -595,8 +595,8 @@ function render() {
             <span class="stat-val" id="sv-def">${getDef(active)}</span>
             <span class="stat-sub">dice</span>
           </div>
-          <div class="stat" data-reset="body" title="Tap to reset body points">
-            <span class="stat-lbl">Body</span>
+          <div class="stat" data-reset="body" title="Tap to reset HP">
+            <span class="stat-lbl">HP</span>
             <span class="stat-val" style="color:var(--green)">${h.baseBody}</span>
             <span class="stat-sub">↺ reset</span>
           </div>
@@ -611,7 +611,7 @@ function render() {
 
     <div class="tracker-section">
       <div class="tracker-row">
-        <span class="t-label">Body</span>
+        <span class="t-label">HP</span>
         <div class="bullets">${makeBullets('body', s.body, 'var(--green)')}</div>
         <span class="t-count" style="color:var(--green)" id="tc-body">${s.body}/${MAX_PTS}</span>
       </div>
