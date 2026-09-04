@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>HeroQuest</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#5a3010">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HeroQuest">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dk:     #2a1a0a;
+      --mid:    #5a3010;
+      --lite:   #8b4513;
+      --bdr:    #c0a060;
+      --parch:  #f5e8c8;
+      --pale:   #fff8e8;
+      --txt:    #1a0a00;
+      --muted:  #7a4a20;
+      --faint:  #8a5a30;
+      --gold:   #b07000;
+      --green:  #2a8830;
+      --purple: #7030a0;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      background: var(--dk);
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--txt);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      flex-shrink: 0;
+      background: var(--dk);
+      padding: 0.5rem 0.6rem 0;
+    }
+
+    h1 {
+      text-align: center;
+      color: #f0d080;
+      font-size: 1.3rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      text-shadow: 0 2px 8px #000;
+      margin-bottom: 0.45rem;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+    }
+
+    .tab {
+      height: 42px;
+      background: var(--mid);
+      color: #c0a050;
+      border: 1px solid var(--bdr);
+      border-bottom: none;
+      font-family: Georgia, serif;
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 6px 6px 0 0;
+      transition: background 0.12s;
+    }
+
+    .tab:hover { background: var(--lite); }
+    .tab.active { background: var(--parch); color: var(--mid); font-weight: bold; }
+
+    /* ── SHEET ── */
+    #sheet {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--parch);
+      border-top: 2px solid var(--bdr);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sheet-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      padding-bottom: 2rem;
+    }
+
+    /* ── HERO HEADER ── */
+    .hero-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 2px solid var(--mid);
+      min-height: 210px;
+    }
+
+    /* ── PORTRAIT ── */
+    .portrait {
+      background: var(--pale);
+      border-right: 2px solid var(--mid);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portrait img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .portrait-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-style: italic;
+      font-size: 0.68rem;
+      text-align: center;
+      pointer-events: none;
+      padding: 1rem;
+    }
+
+    .hint-icon { font-size: 2rem; opacity: 0.35; }
+
+    /* ── HERO INFO ── */
+    .hero-info {
+      padding: 0.65rem 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .class-name {
+      font-size: 1.45rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #5a1a00;
+      text-align: center;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+    }
+
+    .name-row label { font-style: italic; color: var(--muted); white-space: nowrap; }
+
+    input.name-input {
+      flex: 1;
+      border: none;
+      border-bottom: 1px solid var(--mid);
+      background: transparent;
+      font-family: Georgia, serif;
+      font-size: 0.88rem;
+      color: var(--txt);
+      outline: none;
+      padding: 0 2px;
+      min-width: 0;
+    }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--bdr);
+      padding-top: 0.3rem;
+      margin-top: auto;
+    }
+
+    .stat {
+      text-align: center;
+      border-right: 1px solid var(--bdr);
+      padding: 0.1rem 0.05rem;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-lbl {
+      display: block;
+      font-size: 0.52rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .stat-val {
+      display: block;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #3a0a00;
+      line-height: 1.05;
+    }
+
+    .stat-sub {
+      display: block;
+      font-size: 0.5rem;
+      color: var(--faint);
+    }
+
+    /* ── TRACKERS ── */
+    .tracker-section {
+      padding: 0.55rem 0.8rem;
+      border-bottom: 2px solid var(--mid);
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .tracker-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .t-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      font-style: italic;
+      width: 38px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .bullets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .bullet {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--mid);
+      cursor: pointer;
+      transition: transform 0.07s, opacity 0.1s;
+      flex-shrink: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .bullet:active { transform: scale(0.82); }
+    .bullet.spent { background: var(--pale) !important; border-color: var(--bdr) !important; opacity: 0.5; }
+
+    .t-count {
+      font-size: 0.85rem;
+      font-weight: bold;
+      width: 38px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ── EQUIPMENT ── */
+    .equip-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 2px solid var(--mid);
+    }
+
+    .equip-col { padding: 0.55rem 0.8rem; }
+    .equip-col:first-child { border-right: 1px solid var(--mid); }
+
+    .equip-title {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+      font-style: italic;
+      border-bottom: 1px solid var(--bdr);
+      padding-bottom: 0.15rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .equip-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.32rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .equip-item input {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: var(--mid);
+    }
+
+    .equip-name { font-size: 0.8rem; flex: 1; min-width: 0; }
+
+    .equip-stat {
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: var(--mid);
+      background: var(--pale);
+      border: 1px solid var(--bdr);
+      padding: 1px 5px;
+      border-radius: 3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .no-armour { font-size: 0.75rem; color: var(--muted); font-style: italic; }
+
+    /* ── GOLD + ITEMS ── */
+    .misc-section { padding: 0.55rem 0.8rem; }
+
+    .misc-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .misc-lbl {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      font-style: italic;
+      white-space: nowrap;
+      width: 44px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    input.gold-input {
+      width: 72px;
+      border: none;
+      border-bottom: 1px solid var(--mid);
+      background: transparent;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--gold);
+      outline: none;
+      text-align: center;
+    }
+
+    .gp-label { font-size: 0.72rem; color: var(--muted); font-style: italic; }
+
+    .items-col { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+
+    input.item-input {
+      border: none;
+      border-bottom: 1px dotted var(--bdr);
+      background: transparent;
+      font-family: Georgia, serif;
+      font-size: 0.8rem;
+      color: var(--txt);
+      outline: none;
+      width: 100%;
+      padding: 1px 2px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 420px) {
+      h1 { font-size: 1rem; }
+      .tab { font-size: 0.6rem; height: 38px; }
+      .class-name { font-size: 1.1rem; }
+      .bullet { width: 19px; height: 19px; }
+      .stat-val { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>HeroQuest</h1>
+  <nav class="tabs" id="tab-bar">
+    <button class="tab active" data-hero="barbarian">Barbarian</button>
+    <button class="tab"        data-hero="dwarf">Dwarf</button>
+    <button class="tab"        data-hero="elf">Elf</button>
+    <button class="tab"        data-hero="wizard">Wizard</button>
+  </nav>
+</header>
+
+<div id="sheet"></div>
+
+<script>
+/* ── HERO DEFINITIONS ─────────────────────────────────── */
+const HEROES = {
+  barbarian: {
+    name: 'Barbarian', baseAtk: 3, baseDef: 2, baseBody: 8, baseMind: 2,
+    weapons: [
+      { id: 'short-sword', name: 'Short Sword', atk: 2 },
+      { id: 'broadsword',  name: 'Broadsword',  atk: 3 },
+      { id: 'battle-axe',  name: 'Battle Axe',  atk: 3 },
+    ],
+    armour: [
+      { id: 'chain-mail', name: 'Chain Mail', def: 1 },
+      { id: 'plate-mail', name: 'Plate Mail', def: 2 },
+      { id: 'shield',     name: 'Shield',     def: 1 },
+    ],
+  },
+  dwarf: {
+    name: 'Dwarf', baseAtk: 2, baseDef: 2, baseBody: 7, baseMind: 3,
+    weapons: [
+      { id: 'short-sword', name: 'Short Sword', atk: 2 },
+      { id: 'battle-axe',  name: 'Battle Axe',  atk: 3 },
+      { id: 'crossbow',    name: 'Crossbow',    atk: 3 },
+    ],
+    armour: [
+      { id: 'chain-mail', name: 'Chain Mail', def: 1 },
+      { id: 'plate-mail', name: 'Plate Mail', def: 2 },
+      { id: 'shield',     name: 'Shield',     def: 1 },
+    ],
+  },
+  elf: {
+    name: 'Elf', baseAtk: 2, baseDef: 2, baseBody: 6, baseMind: 4,
+    weapons: [
+      { id: 'short-sword', name: 'Short Sword', atk: 2 },
+      { id: 'elven-blade', name: 'Elven Blade', atk: 3 },
+      { id: 'crossbow',    name: 'Crossbow',    atk: 3 },
+    ],
+    armour: [
+      { id: 'chain-mail', name: 'Chain Mail', def: 1 },
+      { id: 'shield',     name: 'Shield',     def: 1 },
+    ],
+  },
+  wizard: {
+    name: 'Wizard', baseAtk: 1, baseDef: 2, baseBody: 4, baseMind: 6,
+    weapons: [
+      { id: 'dagger', name: 'Dagger', atk: 1 },
+      { id: 'staff',  name: 'Staff',  atk: 2 },
+    ],
+    armour: [],
+  },
+};
+
+const MAX_PTS = 12;
+
+/* ── STATE ────────────────────────────────────────────── */
+function freshState() {
+  return { name: '', body: MAX_PTS, mind: MAX_PTS, weapon: null, armour: [], gold: '', items: ['','','','',''], portrait: null };
+}
+
+let active = 'barbarian';
+let state  = {};
+
+(function load() {
+  try { state = JSON.parse(localStorage.getItem('hq-state') || '{}'); } catch(_) {}
+  for (const id of Object.keys(HEROES)) {
+    if (!state[id]) state[id] = freshState();
+    state[id].body = Math.min(Math.max(+state[id].body ?? MAX_PTS, 0), MAX_PTS);
+    state[id].mind = Math.min(Math.max(+state[id].mind ?? MAX_PTS, 0), MAX_PTS);
+    if (!Array.isArray(state[id].armour))  state[id].armour  = [];
+    if (!Array.isArray(state[id].items))   state[id].items   = ['','','','',''];
+    if (state[id].portrait === undefined)  state[id].portrait = null;
+  }
+})();
+
+function save() {
+  try { localStorage.setItem('hq-state', JSON.stringify(state)); } catch(_) {}
+}
+
+/* ── COMPUTED ─────────────────────────────────────────── */
+function getAtk(id) {
+  const h = HEROES[id], s = state[id];
+  const w = h.weapons.find(w => w.id === s.weapon);
+  return w ? w.atk : h.baseAtk;
+}
+
+function getDef(id) {
+  const h = HEROES[id], s = state[id];
+  return h.baseDef + h.armour.filter(a => s.armour.includes(a.id)).reduce((n, a) => n + a.def, 0);
+}
+
+/* ── IMAGE RESIZE ─────────────────────────────────────── */
+function resizeImage(file, maxSz, cb) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const ratio = Math.min(maxSz / img.width, maxSz / img.height, 1);
+      const w = Math.round(img.width * ratio);
+      const h = Math.round(img.height * ratio);
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(c.toDataURL('image/jpeg', 0.78));
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── HTML ESCAPE ──────────────────────────────────────── */
+function e(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── BULLETS ──────────────────────────────────────────── */
+function makeBullets(type, current, color) {
+  return Array.from({length: MAX_PTS}, (_, i) => {
+    const alive = i < current;
+    return `<button class="bullet${alive ? '' : ' spent'}"
+                    style="${alive ? `background:${color};border-color:${color}` : ''}"
+                    data-t="${type}" data-i="${i}"></button>`;
+  }).join('');
+}
+
+/* ── RENDER ───────────────────────────────────────────── */
+function render() {
+  const h = HEROES[active];
+  const s = state[active];
+
+  document.getElementById('sheet').innerHTML = `
+  <div class="sheet-inner">
+
+    <div class="hero-header">
+      <div class="portrait" id="portrait-area">
+        <img id="portrait-img" alt="">
+        <div class="portrait-hint" id="portrait-hint">
+          <div class="hint-icon">🖼</div>
+          <div>Tap to add portrait</div>
+        </div>
+        <input type="file" id="portrait-file" accept="image/*" style="display:none">
+      </div>
+      <div class="hero-info">
+        <div class="class-name">${h.name}</div>
+        <div class="name-row">
+          <label for="inp-name">Name:</label>
+          <input id="inp-name" class="name-input" type="text" value="${e(s.name)}" placeholder="…">
+        </div>
+        <div class="stats-row">
+          <div class="stat">
+            <span class="stat-lbl">Attack</span>
+            <span class="stat-val" id="sv-atk">${getAtk(active)}</span>
+            <span class="stat-sub">dice</span>
+          </div>
+          <div class="stat">
+            <span class="stat-lbl">Defend</span>
+            <span class="stat-val" id="sv-def">${getDef(active)}</span>
+            <span class="stat-sub">dice</span>
+          </div>
+          <div class="stat">
+            <span class="stat-lbl">Body</span>
+            <span class="stat-val" style="color:var(--green)">${h.baseBody}</span>
+            <span class="stat-sub">base</span>
+          </div>
+          <div class="stat">
+            <span class="stat-lbl">Mind</span>
+            <span class="stat-val" style="color:var(--purple)">${h.baseMind}</span>
+            <span class="stat-sub">base</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tracker-section">
+      <div class="tracker-row">
+        <span class="t-label">Body</span>
+        <div class="bullets">${makeBullets('body', s.body, 'var(--green)')}</div>
+        <span class="t-count" style="color:var(--green)" id="tc-body">${s.body}/${MAX_PTS}</span>
+      </div>
+      <div class="tracker-row">
+        <span class="t-label">Mind</span>
+        <div class="bullets">${makeBullets('mind', s.mind, 'var(--purple)')}</div>
+        <span class="t-count" style="color:var(--purple)" id="tc-mind">${s.mind}/${MAX_PTS}</span>
+      </div>
+    </div>
+
+    <div class="equip-section">
+      <div class="equip-col">
+        <div class="equip-title">Weapons</div>
+        ${h.weapons.map(w => `
+          <label class="equip-item">
+            <input type="checkbox" value="${w.id}" ${s.weapon === w.id ? 'checked' : ''} data-role="weapon">
+            <span class="equip-name">${w.name}</span>
+            <span class="equip-stat">${w.atk} ⚔</span>
+          </label>
+        `).join('')}
+      </div>
+      <div class="equip-col">
+        <div class="equip-title">Armour</div>
+        ${h.armour.length === 0
+          ? `<span class="no-armour">— no armour —</span>`
+          : h.armour.map(a => `
+              <label class="equip-item">
+                <input type="checkbox" value="${a.id}" ${s.armour.includes(a.id) ? 'checked' : ''} data-role="armour">
+                <span class="equip-name">${a.name}</span>
+                <span class="equip-stat">+${a.def} 🛡</span>
+              </label>
+            `).join('')
+        }
+      </div>
+    </div>
+
+    <div class="misc-section">
+      <div class="misc-row">
+        <span class="misc-lbl">Gold</span>
+        <input class="gold-input" id="inp-gold" type="number" min="0" value="${e(s.gold)}" placeholder="0">
+        <span class="gp-label">gp</span>
+      </div>
+      <div class="misc-row" style="align-items:flex-start">
+        <span class="misc-lbl" style="padding-top:3px">Items</span>
+        <div class="items-col">
+          ${s.items.map((v, i) => `
+            <input class="item-input" type="text" value="${e(v)}" placeholder="—" data-item="${i}">
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
+  </div>`;
+
+  applyPortrait();
+  wire();
+}
+
+/* ── PORTRAIT ─────────────────────────────────────────── */
+function applyPortrait() {
+  const s    = state[active];
+  const img  = document.getElementById('portrait-img');
+  const hint = document.getElementById('portrait-hint');
+  if (s.portrait) {
+    img.src = s.portrait;
+    img.style.display = 'block';
+    hint.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    hint.style.display = 'flex';
+  }
+}
+
+/* ── WIRE EVENTS ──────────────────────────────────────── */
+function wire() {
+  const s = state[active];
+
+  // Name / gold / items
+  document.getElementById('inp-name').addEventListener('input', ev => { s.name = ev.target.value; save(); });
+  document.getElementById('inp-gold').addEventListener('input', ev => { s.gold = ev.target.value; save(); });
+  document.querySelectorAll('[data-item]').forEach(el =>
+    el.addEventListener('input', ev => { s.items[+ev.target.dataset.item] = ev.target.value; save(); })
+  );
+
+  // Weapons — checkboxes with mutual exclusion
+  document.querySelectorAll('[data-role="weapon"]').forEach(el =>
+    el.addEventListener('change', ev => {
+      if (ev.target.checked) {
+        document.querySelectorAll('[data-role="weapon"]').forEach(o => { if (o !== ev.target) o.checked = false; });
+        s.weapon = ev.target.value;
+      } else {
+        s.weapon = null;
+      }
+      document.getElementById('sv-atk').textContent = getAtk(active);
+      save();
+    })
+  );
+
+  // Armour — standard checkboxes
+  document.querySelectorAll('[data-role="armour"]').forEach(el =>
+    el.addEventListener('change', ev => {
+      const id = ev.target.value;
+      if (ev.target.checked) { if (!s.armour.includes(id)) s.armour.push(id); }
+      else s.armour = s.armour.filter(a => a !== id);
+      document.getElementById('sv-def').textContent = getDef(active);
+      save();
+    })
+  );
+
+  // Bullets
+  document.querySelectorAll('.bullet').forEach(btn =>
+    btn.addEventListener('click', ev => {
+      const el   = ev.currentTarget;
+      const type = el.dataset.t;
+      const idx  = +el.dataset.i;
+      s[type] = (idx < s[type]) ? idx : idx + 1;
+      updateTracker(type, s[type]);
+      save();
+    })
+  );
+
+  // Portrait: click area → open file picker
+  document.getElementById('portrait-area').addEventListener('click', () => {
+    document.getElementById('portrait-file').click();
+  });
+
+  document.getElementById('portrait-file').addEventListener('change', ev => {
+    const file = ev.target.files[0];
+    if (!file) return;
+    resizeImage(file, 380, data => {
+      state[active].portrait = data;
+      save();
+      applyPortrait();
+      ev.target.value = ''; // reset so same file can be re-selected
+    });
+  });
+}
+
+/* ── UPDATE TRACKER (no re-render) ───────────────────── */
+function updateTracker(type, cur) {
+  const color = type === 'body' ? 'var(--green)' : 'var(--purple)';
+  document.querySelectorAll(`.bullet[data-t="${type}"]`).forEach((btn, i) => {
+    const alive = i < cur;
+    btn.classList.toggle('spent', !alive);
+    btn.style.background  = alive ? color : '';
+    btn.style.borderColor = alive ? color : '';
+  });
+  document.getElementById(`tc-${type}`).textContent = `${cur}/${MAX_PTS}`;
+}
+
+/* ── TABS ─────────────────────────────────────────────── */
+document.getElementById('tab-bar').addEventListener('click', ev => {
+  const tab = ev.target.closest('.tab');
+  if (!tab) return;
+  active = tab.dataset.hero;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+  render();
+  document.getElementById('sheet').scrollTop = 0;
+});
+
+/* ── BOOT ─────────────────────────────────────────────── */
+render();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>

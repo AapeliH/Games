@@ -24,6 +24,12 @@ A Warhammer 40,000 army creator tool for building Chaos Space Marines lists.
 
 A Yatzy scorecard PWA supporting both standard Yatzy (5 dice) and Max Yatzy (6 dice), with up to 4 players, re-roll tracking, and offline support.
 
+### HeroQuest Character Sheets PWA
+
+**Location:** [HQ-PWA/](HQ-PWA/)
+
+A HeroQuest character sheet tool packaged as a Progressive Web App with offline support.
+
 ### HeroQuest Character Sheets
 
 **Location:** [HQ/](HQ/)
@@ -58,6 +64,12 @@ Games/
 │   └── images/
 │       └── icon.svg
 
+├── HQ-PWA/
+│   ├── index.html
+│   ├── manifest.json
+│   ├── sw.js
+│   └── icon.svg
+│
 ├── HQ/
 │   └── index.html
 │
